@@ -1,8 +1,8 @@
-﻿using CBL_CasinoSuite.Data.Models;
+﻿using CBL_CasinoSuite.Data.Interfaces;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace CBL_CasinoSuite.Data.Interfaces
+namespace CBL_CasinoSuite.Data.Models
 {
     public class Dal : IDal
     {
@@ -11,15 +11,15 @@ namespace CBL_CasinoSuite.Data.Interfaces
         private static IMongoDatabase database = dbClient.GetDatabase("CasinoSuite");
         private static IMongoCollection<BsonDocument> collection = database.GetCollection<BsonDocument>("Users");
 
-        public void AddUser(User user = null)
+        public void AddUser(User user)
         {
-            var document = new BsonDocument { 
-                { "username", "Aiden" }, 
-                { "password", "password" }, 
-                { "total_balance", -1000000 }, 
+            var document = new BsonDocument {
+                { "username", "Aiden" },
+                { "password", "password" },
+                { "total_balance", -1000000 },
                 { "game_data", new BsonArray {
-                    new BsonDocument { 
-                        { "name", "Blackjack" }, 
+                    new BsonDocument {
+                        { "name", "Blackjack" },
                         { "winnings", 3 },
                         { "losses", 9999999 },
                         { "win_count", 1 },
@@ -48,6 +48,21 @@ namespace CBL_CasinoSuite.Data.Interfaces
         }
 
         public void UpdateUser(string username, User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateUserBalance(string username, float balance)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateUserStatistics(string username, GameStats gameStatistics)
+        {
+            throw new NotImplementedException();
+        }
+
+        List<User> IDal.GetUsers()
         {
             throw new NotImplementedException();
         }

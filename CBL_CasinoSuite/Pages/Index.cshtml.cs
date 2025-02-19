@@ -11,7 +11,6 @@ namespace CBL_CasinoSuite.Pages
         public IndexModel(IDal dal)
         {
             dbDal = dal;
-            dbDal.AddUser();
         }
 
         public void OnGet()
