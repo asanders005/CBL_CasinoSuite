@@ -1,0 +1,17 @@
+﻿@page
+@model CBL_CasinoSuite.Pages.SignIn
+@{
+ViewData["Title"] = "Sign in";
+}
+
+<div class="text-center">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+    <form method="post" asp-page-handler="SignIn">
+        <input asp-for="@Model.Username" type="text" placeholder="Username" class="textfield"/>
+        <br/>
+        <input asp-for="@Model.Password" type="password" placeholder="Password" class="textfield"/>
+        <br/>
+        <button type="submit" class="buttonfield">Sign In</button>
+    </form>
+    <a asp-page="/SignUp">Register</a>
+</div>
