@@ -1,3 +1,4 @@
+using CBL_CasinoSuite.Data.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -5,11 +6,12 @@ namespace CBL_CasinoSuite.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
+        public IDal dbDal { get; private set; }
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public IndexModel(IDal dal)
         {
-            _logger = logger;
+            dbDal = dal;
+            dbDal.AddUser();
         }
 
         public void OnGet()

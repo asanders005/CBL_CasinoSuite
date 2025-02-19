@@ -6,7 +6,7 @@ namespace CBL_CasinoSuite.Data.Interfaces
     {
         public User GetUser(string username);
         public User[] GetUsers();
-        public void AddUser(User user);
+        public void AddUser(User user = null);
         public void UpdateUser(string username, User user);
         public void DeleteUser(string username);
     }

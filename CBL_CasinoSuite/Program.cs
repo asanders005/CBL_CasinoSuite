@@ -1,7 +1,10 @@
+using CBL_CasinoSuite.Data.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddTransient<IDal, Dal>();
 
 var app = builder.Build();
 
