@@ -5,8 +5,13 @@ namespace CBL_CasinoSuite.Data.Models
     public class User
     {
         public readonly string Username;
-        public float CurrentBalance { get; private set; }
+        public float CurrentBalance { get; private set; } = -1;
         public List<GameStats> GameStatistics { get; private set; } = new List<GameStats>();
+
+        public User()
+        {
+            Username = "";
+        }
 
         public User(string username, string pass, IGameList gameList)
         {
@@ -20,6 +25,6 @@ namespace CBL_CasinoSuite.Data.Models
             }
         }
 
-        private string password;
+        private string password = "";
     }
 }
