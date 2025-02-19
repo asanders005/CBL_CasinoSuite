@@ -1,9 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using CBL_CasinoSuite.Data.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CBL_CasinoSuite.Pages;
 
 public class Account : PageModel {
-    public void OnGet() {
-        
+    public readonly IUser userSingleton;
+    public Account(IUser user)
+    {
+        userSingleton = user;
+    }
+
+    public IActionResult OnGet()
+    {
+        if (string.IsNullOrEmpty(userSingleton.GetUser().Username))
+        {
+            return RedirectToPage("/SignIn");
+        }
+
+        return null;
     }
 }

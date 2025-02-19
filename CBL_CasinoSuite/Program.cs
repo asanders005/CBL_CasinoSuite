@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddTransient<IGameList, GameList>();
 builder.Services.AddTransient<IDal, Dal>();
+builder.Services.AddSingleton<IUser, UserSingleton>();
 
 var app = builder.Build();
 

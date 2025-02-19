@@ -23,6 +23,11 @@ namespace CBL_CasinoSuite.Data.Models
         [BsonIgnoreIfNull]
         public List<GameStats> GameStatistics { get; set; } = new List<GameStats>();
 
+        public User()
+        {
+            Username = "";
+        }
+
         public User(string username, string pass, IGameList gameList)
         {
             Username = username;
