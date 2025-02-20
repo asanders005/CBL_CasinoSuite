@@ -9,62 +9,47 @@ namespace CBL_CasinoSuite.Data.Models
         private static MongoClient dbClient = new MongoClient("mongodb+srv://verycoolmongoaccount:4!5$pVHyYSEb!L@users.sb3bg.mongodb.net/?retryWrites=true&w=majority&appName=Users");
 
         private static IMongoDatabase database = dbClient.GetDatabase("CasinoSuite");
-        private static IMongoCollection<BsonDocument> collection = database.GetCollection<BsonDocument>("Users");
+        private static IMongoCollection<User> collection = database.GetCollection<User>("Users");
 
         public void AddUser(User user)
         {
-            var document = new BsonDocument {
-                { "username", "Aiden" },
-                { "password", "password" },
-                { "total_balance", -1000000 },
-                { "game_data", new BsonArray {
-                    new BsonDocument {
-                        { "name", "Blackjack" },
-                        { "winnings", 3 },
-                        { "losses", 9999999 },
-                        { "win_count", 1 },
-                        { "loss_count", 1 }
-                    },
-                  }
-                }
-            };
-
-            collection.InsertOne(document);
+            collection.InsertOne(user);
         }
 
         public void DeleteUser(string username)
         {
-            throw new NotImplementedException();
+            collection.DeleteOne(u => u.Username.Equals(username));
         }
 
         public User GetUser(string username)
         {
-            throw new NotImplementedException();
+            return collection.AsQueryable().AsEnumerable().First(u => u.Username.Equals(username));
         }
 
         public User[] GetUsers()
         {
-            throw new NotImplementedException();
+            return collection.AsQueryable().ToArray();
         }
 
         public void UpdateUser(string username, User user)
         {
-            throw new NotImplementedException();
+            collection.AsQueryable().AsEnumerable().First(u => u.Username.Equals(username)).Update(user);
         }
 
         public void UpdateUserBalance(string username, float balance)
         {
-            throw new NotImplementedException();
+            collection.AsQueryable().AsEnumerable().First(u => u.Username.Equals(username)).CurrentBalance = balance;
         }
 
         public void UpdateUserStatistics(string username, GameStats gameStatistics)
         {
-            throw new NotImplementedException();
+            List<GameStats> userStats = collection.AsQueryable().AsEnumerable().First(u => u.Username.Equals(username)).GameStatistics;
+            userStats.First(g => g._GameName.Equals(gameStatistics._GameName)).Update(gameStatistics);
         }
 
         List<User> IDal.GetUsers()
         {
-            throw new NotImplementedException();
+            return collection.AsQueryable().ToList();
         }
     }
 }
