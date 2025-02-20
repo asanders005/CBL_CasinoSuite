@@ -14,7 +14,7 @@ namespace CBL_CasinoSuite.Data.Models
         public readonly string Username;
 
         [BsonElement("password")]
-        public string Password { get; private set; }
+        public string Password { get; set; }
 
         [BsonElement("currentBalance")]
         public float CurrentBalance { get; set; }

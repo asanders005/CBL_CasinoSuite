@@ -18,13 +18,13 @@ namespace CBL_CasinoSuite.Data.Models
 
         public void DeleteUser(string username)
         {
-            collection.DeleteOne(u => u.Username.Equals(username));
+            collection.DeleteOne(u => u.Username == username);
         }
 
         public User GetUser(string username)
         {
-            User foundUser = collection.AsQueryable().AsEnumerable().First(u => u.Username.Equals(username));
-            //if (foundUser == null) foundUser = new User();
+            User foundUser = collection.AsQueryable().AsEnumerable().First(u => u.Username == username);
+            if (foundUser == null) foundUser = new User();
             return foundUser;
         }
 
@@ -35,18 +35,25 @@ namespace CBL_CasinoSuite.Data.Models
 
         public void UpdateUser(string username, User user)
         {
-            collection.AsQueryable().AsEnumerable().First(u => u.Username.Equals(username)).Update(user);
+            collection.AsQueryable().AsEnumerable().First(u => u.Username == username)?.Update(user);
         }
 
         public void UpdateUserBalance(string username, float balance)
         {
-            collection.AsQueryable().AsEnumerable().First(u => u.Username.Equals(username)).CurrentBalance = balance;
+            User foundUser = collection.AsQueryable().AsEnumerable().First(u => u.Username == username);
+            if (foundUser != null) foundUser.CurrentBalance = balance;
+        }
+
+        public void UpdateUserPassword(string username, string password)
+        {
+            User foundUser = collection.AsQueryable().AsEnumerable().First(u => u.Username == username);
+            if (foundUser != null) foundUser.Password = password;
         }
 
         public void UpdateUserStatistics(string username, GameStats gameStatistics)
         {
-            List<GameStats> userStats = collection.AsQueryable().AsEnumerable().First(u => u.Username.Equals(username)).GameStatistics;
-            userStats.First(g => g._GameName.Equals(gameStatistics._GameName)).Update(gameStatistics);
+            List<GameStats>? userStats = collection.AsQueryable().AsEnumerable().First(u => u.Username == username)?.GameStatistics;
+            userStats?.First(g => g._GameName == gameStatistics._GameName)?.Update(gameStatistics);
         }
 
         List<User> IDal.GetUsers()
