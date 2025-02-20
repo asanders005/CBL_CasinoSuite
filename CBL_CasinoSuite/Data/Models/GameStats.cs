@@ -12,5 +12,13 @@
         {
             _GameName = gameName;
         }
+      
+        public void Update(GameStats gameStats)
+        {
+            TotalWins = gameStats.TotalWins;
+            TotalWinnings = gameStats.TotalWinnings;
+            TotalLosses = gameStats.TotalLosses;
+            TotalLosings = gameStats.TotalLosings;
+        }
     }
 }
