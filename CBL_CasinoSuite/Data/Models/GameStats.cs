@@ -12,7 +12,7 @@
         {
             _GameName = gameName;
         }
-
+      
         public void Update(GameStats gameStats)
         {
             TotalWins = gameStats.TotalWins;

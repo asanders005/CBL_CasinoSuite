@@ -40,6 +40,5 @@ namespace CBL_CasinoSuite.Data.Models
             CurrentBalance = user.CurrentBalance;
             GameStatistics = user.GameStatistics;
         }
-
     }
 }
