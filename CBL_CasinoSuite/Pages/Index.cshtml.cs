@@ -18,6 +18,8 @@ namespace CBL_CasinoSuite.Pages
         {
             //User newUser = new User("Newothan McUser", "NOTpassword1234", new GameList());
             //dbDal.AddUser(newUser);
+
+            dbDal.UpdateUserBalance("Newothan McUser", 100);
         }
     }
 }

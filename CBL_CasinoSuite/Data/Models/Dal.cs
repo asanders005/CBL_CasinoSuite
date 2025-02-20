@@ -23,7 +23,7 @@ namespace CBL_CasinoSuite.Data.Models
 
         public User GetUser(string username)
         {
-            User foundUser = collection.AsQueryable().AsEnumerable().First(u => u.Username == username);
+            User foundUser = collection.Find(u => u.Username == username).First();
             if (foundUser == null) foundUser = new User();
             return foundUser;
         }
@@ -35,25 +35,29 @@ namespace CBL_CasinoSuite.Data.Models
 
         public void UpdateUser(string username, User user)
         {
-            collection.AsQueryable().AsEnumerable().First(u => u.Username == username)?.Update(user);
+            var update = Builders<User>.Update
+                .Set(u => u.CurrentBalance, user.CurrentBalance)
+                .Set(u => u.GameStatistics, user.GameStatistics);
+
+            collection.UpdateOne(u => u.Username == username, update);
         }
 
         public void UpdateUserBalance(string username, float balance)
         {
-            User foundUser = collection.AsQueryable().AsEnumerable().First(u => u.Username == username);
-            if (foundUser != null) foundUser.CurrentBalance = balance;
+            var update = Builders<User>.Update.Set(u => u.CurrentBalance, balance);
+            collection.UpdateOne(u => u.Username == username, update);
         }
 
         public void UpdateUserPassword(string username, string password)
         {
-            User foundUser = collection.AsQueryable().AsEnumerable().First(u => u.Username == username);
-            if (foundUser != null) foundUser.Password = password;
+            var update = Builders<User>.Update.Set(u => u.Password, password);
+            collection.UpdateOne(u => u.Username == username, update);
         }
 
         public void UpdateUserStatistics(string username, GameStats gameStatistics)
         {
-            List<GameStats>? userStats = collection.AsQueryable().AsEnumerable().First(u => u.Username == username)?.GameStatistics;
-            userStats?.First(g => g._GameName == gameStatistics._GameName)?.Update(gameStatistics);
+            var update = Builders<User>.Update.Set(u => u.GameStatistics.First(g => g._GameName == gameStatistics._GameName), gameStatistics);
+            collection.UpdateOne(u => u.Username == username, update);
         }
 
         List<User> IDal.GetUsers()
