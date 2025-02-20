@@ -23,7 +23,9 @@ namespace CBL_CasinoSuite.Data.Models
 
         public User GetUser(string username)
         {
-            return collection.AsQueryable().AsEnumerable().First(u => u.Username.Equals(username));
+            User foundUser = collection.AsQueryable().AsEnumerable().First(u => u.Username.Equals(username));
+            //if (foundUser == null) foundUser = new User();
+            return foundUser;
         }
 
         public User[] GetUsers()
