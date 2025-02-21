@@ -31,11 +31,6 @@ namespace CBL_CasinoSuite.Data.Models
         [BsonElement("totalLosings")]
         public float TotalLosings { get; set; } = 0;
 
-        public GameStats()
-        {
-
-        }
-
         public GameStats(string gameName)
         {
             _GameName = gameName;
