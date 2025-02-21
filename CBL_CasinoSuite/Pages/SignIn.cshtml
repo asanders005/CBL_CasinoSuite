@@ -11,6 +11,8 @@ ViewData["Title"] = "Sign in";
         <br/>
         <input asp-for="@Model.Password" type="password" placeholder="Password" class="textfield"/>
         <br/>
+		<label class="text-danger">@Model.SignInWarning</label>
+		<br />
         <button type="submit" class="buttonfield">Sign In</button>
     </form>
     <a asp-page="/SignUp">Register</a>
