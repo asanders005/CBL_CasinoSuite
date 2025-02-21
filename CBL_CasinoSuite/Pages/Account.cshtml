@@ -5,8 +5,9 @@ ViewData["Title"] = "Account";
 }
 
 <div class="text-center">
-    <h1 class="display-4">(Account Name)</h1>
+
+    <h1 class="display-4">@Model.user.Username</h1>
+    <h2>Current Balance: $@Model.user.CurrentBalance.ToString("F2")</h2>
     <h3>(Total Gains)</h3>
     <h3>(Detailed Wins/Losses Chart)</h3>
-    <p>This page would redirect to the sign in page instead if the user doesn't have an account connected.</p>
 </div>
