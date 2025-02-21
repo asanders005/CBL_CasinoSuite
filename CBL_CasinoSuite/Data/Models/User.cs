@@ -1,13 +1,37 @@
 ﻿using CBL_CasinoSuite.Data.Interfaces;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
 
 namespace CBL_CasinoSuite.Data.Models
 {
     public class User
     {
-        public readonly string Username;
-        public string Password { get; set; } = "";
-        public float CurrentBalance { get; private set; } = -1;
-        public List<GameStats> GameStatistics { get; private set; } = new List<GameStats>();
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
+
+        private string username;
+
+        [BsonElement("username")]
+        public string Username { 
+            get { return username; }
+            set
+            {
+                if (username == null || username.Trim() == "")
+                {
+                    username = value;
+                }
+            }
+        }
+
+        [BsonElement("password")]
+        public string Password { get; set; }
+
+        [BsonElement("currentBalance")]
+        public float CurrentBalance { get; set; }
+
+        [BsonElement("gameData")]
+        public List<GameStats> GameStatistics { get; set; } = new();
 
         public User()
         {
