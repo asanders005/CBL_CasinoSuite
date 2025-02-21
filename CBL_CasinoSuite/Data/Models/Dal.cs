@@ -1,5 +1,6 @@
 ﻿using CBL_CasinoSuite.Data.Interfaces;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
 namespace CBL_CasinoSuite.Data.Models
@@ -23,7 +24,7 @@ namespace CBL_CasinoSuite.Data.Models
 
         public User GetUser(string username)
         {
-            User foundUser = collection.Find(u => u.Username == username).First();
+            User foundUser = collection.Find(u => u.Username == username).FirstOrDefault();
             if (foundUser == null) foundUser = new User();
             return foundUser;
         }
@@ -56,7 +57,7 @@ namespace CBL_CasinoSuite.Data.Models
 
         public void UpdateUserStatistics(string username, GameStats gameStatistics)
         {
-            var update = Builders<User>.Update.Set(u => u.GameStatistics.First(g => g._GameName == gameStatistics._GameName), gameStatistics);
+            var update = Builders<User>.Update.Set(u => u.GameStatistics.Where(g => g._GameName == gameStatistics._GameName).First(), gameStatistics);
             collection.UpdateOne(u => u.Username == username, update);
         }
 

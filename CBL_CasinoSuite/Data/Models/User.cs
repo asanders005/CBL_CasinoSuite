@@ -31,8 +31,7 @@ namespace CBL_CasinoSuite.Data.Models
         public float CurrentBalance { get; set; }
 
         [BsonElement("gameData")]
-        [BsonIgnoreIfNull]
-        public List<GameStats> GameStatistics { get; set; } = new List<GameStats>();
+        public List<GameStats> GameStatistics { get; set; } = new();
 
         public User()
         {

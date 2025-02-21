@@ -16,10 +16,14 @@ namespace CBL_CasinoSuite.Pages
 
         public void OnGet()
         {
-            //User newUser = new User("Newothan McUser", "NOTpassword1234", new GameList());
-            //dbDal.AddUser(newUser);
+            GameStats tempGame = new GameStats("Competative Tic Tac Toe");
+            tempGame.TotalWins = 0;
+            tempGame.TotalLosses = 4000;
+            tempGame.TotalWinnings = 0;
+            tempGame.TotalLosses = 1000003;
 
-            dbDal.UpdateUserBalance("Newothan McUser", 100);
+            dbDal.UpdateUserStatistics("Newothan McUser", tempGame);
+            
         }
     }
 }
