@@ -5,6 +5,7 @@ namespace CBL_CasinoSuite.Data.Models
     public class User
     {
         public readonly string Username;
+        public string Password { get; set; } = "";
         public float CurrentBalance { get; private set; } = -1;
         public List<GameStats> GameStatistics { get; private set; } = new List<GameStats>();
 
@@ -16,7 +17,7 @@ namespace CBL_CasinoSuite.Data.Models
         public User(string username, string pass, IGameList gameList)
         {
             Username = username;
-            password = pass;
+            Password = pass;
             CurrentBalance = 500f;
 
             foreach (var game in gameList.GetGameList())
@@ -24,7 +25,5 @@ namespace CBL_CasinoSuite.Data.Models
                 GameStatistics.Add(new GameStats(game));
             }
         }
-
-        private string password = "";
     }
 }

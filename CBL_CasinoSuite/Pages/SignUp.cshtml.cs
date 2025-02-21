@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CBL_CasinoSuite.Pages;
 
-[BindProperties]
+[BindProperties(SupportsGet = true)]
 public class SignUp : PageModel
 {
     [Required, MinLength(5, ErrorMessage = "Your username must be at least 5 characters"), MaxLength(20, ErrorMessage = "Your username cannot exceed 20 characters")]
@@ -16,7 +16,6 @@ public class SignUp : PageModel
     [Compare("NewPassword", ErrorMessage = "Passwords do not match.")]
     public string ConfirmPassword { get; set; }
 
-    [BindProperty(SupportsGet = true)]
     public string UsernameWarning { get; set; } = "";
 
     public SignUp(IDal dal, IGameList gameList, IUser userSingleton)
@@ -33,11 +32,6 @@ public class SignUp : PageModel
 
     public IActionResult OnPostSignUp()
     {
-        if (!ModelState.IsValid)
-        {
-            return Page();
-        }
-
         if (string.IsNullOrEmpty(_dal.GetUser(NewUsername).Username))
         {
             User newUser = new Data.Models.User(NewUsername, NewPassword, _gameList);
@@ -47,7 +41,7 @@ public class SignUp : PageModel
             return RedirectToPage("/Index");
         }
 
-        return RedirectToAction("Get", new { UsernameWarning = "That username is already taken" });
+        return RedirectToAction("Get", new { NewUsername = NewUsername, NewPassword = NewPassword, ConfirmPassword = ConfirmPassword, UsernameWarning = "That username is already taken" });
     }
 
     private IDal _dal;

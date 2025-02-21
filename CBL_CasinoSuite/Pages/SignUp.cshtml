@@ -10,7 +10,6 @@ ViewData["Title"] = "Sign up";
         <input asp-for="NewUsername" placeholder="Username" class="textfield"/>
 		<br />
 		<span asp-validation-for="NewUsername" class="text-danger"></span>
-		<label asp-for="UsernameWarning" class="text-danger"></label>
         <label class="text-danger">@Model.UsernameWarning</label>
         <br/>
         <input asp-for="NewPassword" type="password" placeholder="Password" class="textfield"/>
