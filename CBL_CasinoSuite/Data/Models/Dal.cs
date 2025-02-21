@@ -57,8 +57,14 @@ namespace CBL_CasinoSuite.Data.Models
 
         public void UpdateUserStatistics(string username, GameStats gameStatistics)
         {
-            var update = Builders<User>.Update.Set(u => u.GameStatistics.Where(g => g._GameName == gameStatistics._GameName).First(), gameStatistics);
-            collection.UpdateOne(u => u.Username == username, update);
+            var filter = Builders<User>.Filter.And(
+                Builders<User>.Filter.Eq(u => u.Username, username),
+                Builders<User>.Filter.Eq("GameStatistics._GameName", gameStatistics._GameName) // Find the correct game
+            );
+
+            var update = Builders<User>.Update.Set("GameStatistics.$", gameStatistics);
+
+            collection.UpdateOne(filter, update);
         }
 
         List<User> IDal.GetUsers()
