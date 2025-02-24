@@ -1,0 +1,30 @@
+﻿@page
+@model CBL_CasinoSuite.Pages.SignUp
+@{
+ViewData["Title"] = "Sign up";
+}
+
+<div class="text-center">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+    <form method="post" asp-page-handler="SignUp">
+        <input asp-for="NewUsername" placeholder="Username" class="textfield"/>
+		    <br />
+		    <span asp-validation-for="NewUsername" class="text-danger"></span>
+        <label class="text-danger">@Model.UsernameWarning</label>
+        <br/>
+        <input asp-for="NewPassword" type="password" placeholder="Password" class="textfield"/>
+		    <br />
+		    <span asp-validation-for="NewPassword" class="text-danger"></span>
+        <br/>
+        <input asp-for="ConfirmPassword" type="password" placeholder="Confirm Password" class="textfield"/>
+		    <br />
+		    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+		    <br/>
+        <button type="submit" class="buttonfield">Sign In</button>
+    </form>
+	<p>Already have an account? <a asp-page="/SignIn">Log In</a></p>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial"/>
+}

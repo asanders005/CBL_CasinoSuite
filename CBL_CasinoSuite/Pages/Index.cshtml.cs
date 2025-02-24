@@ -16,8 +16,13 @@ namespace CBL_CasinoSuite.Pages
 
         public void OnGet()
         {
-            User newUser = new User("Newothan McUser", "NOTpassword1234", new GameList());
-            dbDal.AddUser(newUser);
+            GameStats tempGame = new GameStats("Blackjack");
+            tempGame.TotalWins = 1;
+            tempGame.TotalLosses = 999;
+            tempGame.TotalWinnings = 1.01f;
+
+            dbDal.UpdateUserStatistics("Newothan McUser", tempGame);
+            
         }
     }
 }

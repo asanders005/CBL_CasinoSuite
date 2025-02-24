@@ -10,18 +10,33 @@ namespace CBL_CasinoSuite.Data.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
+        private string username;
+
         [BsonElement("username")]
-        public readonly string Username;
+        public string Username { 
+            get { return username; }
+            set
+            {
+                if (username == null || username.Trim() == "")
+                {
+                    username = value;
+                }
+            }
+        }
 
         [BsonElement("password")]
-        public string Password { get; private set; }
+        public string Password { get; set; }
 
         [BsonElement("currentBalance")]
         public float CurrentBalance { get; set; }
 
         [BsonElement("gameData")]
-        [BsonIgnoreIfNull]
-        public List<GameStats> GameStatistics { get; set; } = new List<GameStats>();
+        public List<GameStats> GameStatistics { get; set; } = new();
+
+        public User()
+        {
+            Username = "";
+        }
 
         public User(string username, string pass, IGameList gameList)
         {
@@ -33,12 +48,6 @@ namespace CBL_CasinoSuite.Data.Models
             {
                 GameStatistics.Add(new GameStats(game));
             }
-        }
-
-        public void Update(User user)
-        {
-            CurrentBalance = user.CurrentBalance;
-            GameStatistics = user.GameStatistics;
         }
     }
 }

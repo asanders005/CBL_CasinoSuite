@@ -1,5 +1,6 @@
 ﻿using CBL_CasinoSuite.Data.Interfaces;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
 namespace CBL_CasinoSuite.Data.Models
@@ -18,13 +19,13 @@ namespace CBL_CasinoSuite.Data.Models
 
         public void DeleteUser(string username)
         {
-            collection.DeleteOne(u => u.Username.Equals(username));
+            collection.DeleteOne(u => u.Username == username);
         }
 
         public User GetUser(string username)
         {
-            User foundUser = collection.AsQueryable().AsEnumerable().First(u => u.Username.Equals(username));
-            //if (foundUser == null) foundUser = new User();
+            User foundUser = collection.Find(u => u.Username == username).FirstOrDefault();
+            if (foundUser == null) foundUser = new User();
             return foundUser;
         }
 
@@ -35,18 +36,35 @@ namespace CBL_CasinoSuite.Data.Models
 
         public void UpdateUser(string username, User user)
         {
-            collection.AsQueryable().AsEnumerable().First(u => u.Username.Equals(username)).Update(user);
+            var update = Builders<User>.Update
+                .Set(u => u.CurrentBalance, user.CurrentBalance)
+                .Set(u => u.GameStatistics, user.GameStatistics);
+
+            collection.UpdateOne(u => u.Username == username, update);
         }
 
         public void UpdateUserBalance(string username, float balance)
         {
-            collection.AsQueryable().AsEnumerable().First(u => u.Username.Equals(username)).CurrentBalance = balance;
+            var update = Builders<User>.Update.Set(u => u.CurrentBalance, balance);
+            collection.UpdateOne(u => u.Username == username, update);
+        }
+
+        public void UpdateUserPassword(string username, string password)
+        {
+            var update = Builders<User>.Update.Set(u => u.Password, password);
+            collection.UpdateOne(u => u.Username == username, update);
         }
 
         public void UpdateUserStatistics(string username, GameStats gameStatistics)
         {
-            List<GameStats> userStats = collection.AsQueryable().AsEnumerable().First(u => u.Username.Equals(username)).GameStatistics;
-            userStats.First(g => g._GameName.Equals(gameStatistics._GameName)).Update(gameStatistics);
+            var filter = Builders<User>.Filter.And(
+                Builders<User>.Filter.Eq(u => u.Username, username),
+                Builders<User>.Filter.Eq("GameStatistics._GameName", gameStatistics._GameName) // Find the correct game
+            );
+
+            var update = Builders<User>.Update.Set("GameStatistics.$", gameStatistics);
+
+            collection.UpdateOne(filter, update);
         }
 
         List<User> IDal.GetUsers()
