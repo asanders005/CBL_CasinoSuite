@@ -25,4 +25,11 @@ public class Account : PageModel {
 
         return null;
     }
+
+    public IActionResult OnPostSignOut()
+    {
+        userSingleton.SetUser(new Data.Models.User());
+
+        return RedirectToPage("/SignIn");
+    }
 }

@@ -10,4 +10,8 @@ ViewData["Title"] = "Account";
     <h2>Current Balance: $@Model.user.CurrentBalance.ToString("F2")</h2>
     <h3>(Total Gains)</h3>
     <h3>(Detailed Wins/Losses Chart)</h3>
+
+	<form method="post" asp-page-handler="SignOut">
+		<button type="submit">Sign Out</button>
+	</form>
 </div>
