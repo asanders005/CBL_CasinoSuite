@@ -8,7 +8,7 @@ namespace CBL_CasinoSuite.Pages;
 public class Account : PageModel {
     public readonly IUser userSingleton;
     public User user { get; private set; }
-
+  
     public Account(IUser user)
     {
         userSingleton = user;

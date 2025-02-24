@@ -9,7 +9,6 @@ namespace CBL_CasinoSuite.Pages;
 public class SignIn : PageModel {
     public string Username { get; set; }
     public string Password { get; set; }
-
     public string SignInWarning { get; set; }
 
     public SignIn(IUser user, IDal dal)
