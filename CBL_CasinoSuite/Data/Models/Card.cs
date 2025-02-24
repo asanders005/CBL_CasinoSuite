@@ -1,6 +1,23 @@
-﻿namespace CBL_CasinoSuite.Data.Models;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace CBL_CasinoSuite.Data.Models;
 
 public class Card {
+
+    [SetsRequiredMembers]
+    public Card(CardSuit suit, int number)
+    {
+        Suit = suit;
+        Number = number;
+    }
+
+    [SetsRequiredMembers]
+    public Card(Card card)
+    {
+        Suit = card.Suit;
+        Number = card.Number;
+    }
+
     public bool FaceUp { get; set; } = false;
     
     public enum CardSuit {
