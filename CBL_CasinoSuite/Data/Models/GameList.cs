@@ -1,4 +1,5 @@
 ﻿using CBL_CasinoSuite.Data.Interfaces;
+using CBL_CasinoSuite.Pages.Games;
 
 namespace CBL_CasinoSuite.Data.Models
 {
@@ -6,7 +7,7 @@ namespace CBL_CasinoSuite.Data.Models
     {
         private List<string> _games = new List<string>
             {
-                "Blackjack",
+                BlackjackModel.GAME_NAME
             };
 
         public List<string> GetGameList()

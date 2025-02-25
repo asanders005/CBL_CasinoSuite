@@ -2,3 +2,12 @@
 @model CBL_CasinoSuite.Pages.Games.BlackjackModel
 @{
 }
+
+<div class="text-center">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+    <form method="post" asp-page-handler="BetMoney">
+        <input asp-for="@Model.BetAmount" type="number" placeholder="0.00" class="textfield" />
+        <br />
+        <button type="submit" class="buttonfield">Bet Money</button>
+    </form>
+</div>
