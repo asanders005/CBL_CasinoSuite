@@ -1,0 +1,26 @@
+﻿@using Data.Models
+@model User
+
+<tr>
+	<td>@Model.Username</td>
+	@{
+		float totalChange = 0;
+		int totalWins = 0;
+		float totalWinnings = 0;
+		int totalLosses = 0;
+		float totalLosings = 0;
+		foreach(var stat in Model.GameStatistics)
+		{
+			totalChange += stat.TotalWinnings - stat.TotalLosings;
+			totalWins += stat.TotalWins;
+			totalWinnings += stat.TotalWinnings;
+			totalLosses += stat.TotalLosses;
+			totalLosings += stat.TotalLosings;
+		}
+	}
+    <td>@totalChange.ToString("C2")</td>
+	<td>@totalWins</td>
+    <td>@totalWinnings.ToString("C2")</td>
+	<td>@totalLosses</td>
+    <td>@totalLosings.ToString("C2")</td>
+</tr>
