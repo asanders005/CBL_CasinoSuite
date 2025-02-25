@@ -8,10 +8,14 @@ namespace CBL_CasinoSuite.Pages;
 public class Account : PageModel {
     public readonly IUser userSingleton;
     public User user { get; private set; }
-  
-    public Account(IUser user)
+
+    [BindProperty]
+    public float UpdateBalance { get; set; }
+
+    public Account(IUser user, IDal dal)
     {
         userSingleton = user;
+        this.dal = dal;
     }
 
     public IActionResult OnGet()
@@ -26,10 +30,23 @@ public class Account : PageModel {
         return null;
     }
 
+    public IActionResult OnPostUpdateBalance()
+    { 
+        if (UpdateBalance > 0)
+        {
+            float newBalance = userSingleton.GetUser().CurrentBalance + UpdateBalance;
+            dal.UpdateUserBalance(userSingleton.GetUser().Username, newBalance);
+        }
+
+        return RedirectToAction("Get");
+    }
+
     public IActionResult OnPostSignOut()
     {
         userSingleton.SetUser(new Data.Models.User());
 
         return RedirectToPage("/SignIn");
     }
+
+    private IDal dal;
 }

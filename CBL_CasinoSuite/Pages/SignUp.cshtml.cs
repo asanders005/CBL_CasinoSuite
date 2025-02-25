@@ -38,7 +38,7 @@ public class SignUp : PageModel
             _dal.AddUser(newUser);
             _userSingleton.SetUser(newUser);
 
-            return RedirectToPage("/Index");
+            return RedirectToPage("/Account");
         }
 
         return RedirectToAction("Get", new { NewUsername = NewUsername, NewPassword = NewPassword, ConfirmPassword = ConfirmPassword, UsernameWarning = "That username is already taken" });

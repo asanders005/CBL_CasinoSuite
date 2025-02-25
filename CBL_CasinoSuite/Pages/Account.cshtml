@@ -8,6 +8,12 @@ ViewData["Title"] = "Account";
 
     <h1 class="display-4">@Model.user.Username</h1>
     <h2>Current Balance: $@Model.user.CurrentBalance.ToString("F2")</h2>
+	<form method="post" asp-page-handler="UpdateBalance">
+        <label>Add to Balance:</label>
+        <input type="number" asp-for="UpdateBalance" placeholder="Money to Add..." step="0.01" min="1" />
+        <br />
+        <button type="submit">Update Balance</button>
+    </form>
     <h3>(Total Gains)</h3>
     <h3>(Detailed Wins/Losses Chart)</h3>
 
