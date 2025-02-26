@@ -11,12 +11,12 @@ public class Leaderboard : PageModel {
     public User CurrentUser { get; set; }
 
     [BindProperty(SupportsGet = true)]
-    public string pageNumber { get; set; } = "page1";
+    public string PageNumber { get; set; } = "page1";
     public int PageNum { get; private set; }
 
     [BindProperty(SupportsGet = true)]
-    public string filter { get; set; } = "None";
-    public LeaderboardFilter LbFilter { get; private set; }
+    public string Filter { get; set; } = "None";
+    public EGameList LbFilter { get; private set; } = EGameList.None;
 
     public Leaderboard(IDal dal, IUser user)
     {
@@ -24,37 +24,57 @@ public class Leaderboard : PageModel {
         _userSingleton = user;
     }
 
-    public void OnGet() {
-        if (int.TryParse(pageNumber, out int count))
+    public void OnGet()
+    {
+        if (int.TryParse(PageNumber, out int count))
         {
             PageNum = count;
         }
-
-        string subRoute = pageNumber.Substring(0, 4);
-        if (subRoute.ToLower() == "page")
+        else if (PageNumber.Length >= 5)
         {
-            string pageNumber = this.pageNumber.Substring(4);
-            if (int.TryParse(pageNumber, out int page))
+            string subRoute = PageNumber.Substring(0, 4);
+            if (subRoute.ToLower() == "page")
             {
-                PageNum = page;
+                string pageNumber = this.PageNumber.Substring(4);
+                if (int.TryParse(pageNumber, out int page))
+                {
+                    PageNum = page;
+                }
             }
         }
 
-        if (Enum.TryParse(filter, out LeaderboardFilter lbFilter))
+        if (Enum.TryParse(Filter, true, out EGameList lbFilter))
         {
             LbFilter = lbFilter;
         }
 
-        switch (LbFilter)
+        if (LbFilter != EGameList.None)
         {
-            //case LeaderboardFilter.Blackjack:
-            //    Users = _dal.GetUsers().OrderByDescending(u => u.GameStatistics.FirstOrDefault(stat => stat._GameName == "Blackjack")(stat => stat.TotalWinnings - stat.TotalLosings)).ToList();
-            //    break;
-            default:
-                Users = _dal.GetUsers().OrderByDescending(u => u.GameStatistics.Sum(stat => stat.TotalWinnings - stat.TotalLosings)).ToList();
-                break;
+            Users = _dal.GetUsers()
+                .Where(u => u.GameStatistics.Contains(u.GameStatistics.Find(stat => stat._GameName == LbFilter.ToString())))
+                .Select(u => new { User = u, Stat = u.GameStatistics.Find(stat => stat._GameName == LbFilter.ToString()) })
+                .OrderByDescending(u => u.Stat.TotalWinnings - u.Stat.TotalLosings)
+                .Select(u => u.User)
+                .ToList();
+        }
+        else
+        {
+            Users = _dal.GetUsers().OrderByDescending(u => u.GameStatistics.Sum(stat => stat.TotalWinnings - stat.TotalLosings)).ToList();
         }
         CurrentUser = _userSingleton.GetUser();
+
+        int maxPage = ((Users.Count - 1) / 10) + 1;
+        PageNum = (PageNum < 1) ? 1 : (PageNum > maxPage) ? maxPage : PageNum;
+    }
+
+    public IActionResult OnPostUpdateFilter()
+    {
+        if (Filter != null)
+        {
+            return RedirectToAction("Get", new { PageNumber = "page1", Filter = Filter });
+        }
+
+        return RedirectToAction("Get");
     }
 
     private IDal _dal;

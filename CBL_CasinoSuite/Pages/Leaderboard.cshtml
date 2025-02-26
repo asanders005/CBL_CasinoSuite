@@ -1,44 +1,68 @@
-﻿@page "/Leaderboard/{pageNumber:pageConstraint=page1}/{filter:leaderboardFilterConstraint=none}"
+﻿@page "/Leaderboard/{PageNumber:pageConstraint=page1}/{Filter:leaderboardFilterConstraint=None}"
 @using CBL_CasinoSuite.Data.Models
 @model CBL_CasinoSuite.Pages.Leaderboard
 @{
 	ViewData["Title"] = "Leaderboard";
 }
 
-<div class="board wood-border distincttext">
-	<div class="text-center">
-		<h1 class="display-4">Leaderboard</h1>
-		<label for="Filter">Filter:</label>
-		<select name="Filter">
-			<option>Top (Total Balance)</option>
-			<option>Top (Blackjack)</option>
+<div class="text-center">
+	<h1 class="display-4">Leaderboard</h1>
+	<label for="Filter">Filter:</label>
+	<form method="post" asp-page-handler="UpdateFilter">
+		<select asp-for="@Model.Filter" onchange="this.form.submit()">
+			<option value="@EGameList.None.ToString()">Top (Total Balance)</option>
+			<option value="@EGameList.Blackjack.ToString()">Top (Blackjack)</option>
 		</select>
-	</div>
+	</form>
+</div>
 
-	<table class="whitetable">
-		<tr>
-			<th>User</th>
-			<th>Overall Winnings</th>
-			<th>Total Wins</th>
-			<th>Total Winnings</th>
-			<th>Total Losses</th>
-			<th>Total Losings</th>
-		</tr>
-		@{
-			int entryCount = (Model.Users.Count >= 10) ? 10 : Model.Users.Count;
+<table>
+	<tr>
+		<td>Placement</td>
+		<td>User</td>
+		<td>Overall Winnings</td>
+		<td>Total Wins</td>
+		<td>Total Winnings</td>
+		<td>Total Losses</td>
+		<td>Total Losings</td>
+	</tr>
+	@{
+		int userCount = Model.Users.Count;
+		int entryCount = (userCount >= 10) ? (userCount / 10 >= Model.PageNum) ? 10 : userCount % 10 : userCount;
 
-			// Functionality to show current user's position will be added later (hopefully)
-			// if (!string.IsNullOrEmpty(Model.CurrentUser.Username)) entryCount++;
+		// Functionality to show current user's position will be added later (hopefully)
+		// if (!string.IsNullOrEmpty(Model.CurrentUser.Username)) entryCount++;
 
-			for (int i = 0; i < entryCount; i++)
+		List<User> displayedUsers = new List<User>();
+
+		for (int i = 0; i < entryCount; i++)
+		{
+			int currentUser = i + ((Model.PageNum - 1) * 10);
+
+			Model.Users[currentUser].LbPlacement = currentUser + 1;
+			Model.Users[currentUser].LbFilter = Model.LbFilter;
+			displayedUsers.Add(Model.Users[currentUser]);
+
+			<partial name="Partials/_LeaderboardPartial" model="Model.Users[currentUser]" />
+		}
+		if (!string.IsNullOrEmpty(Model.CurrentUser.Username) && displayedUsers.Find(u => u.Username == Model.CurrentUser.Username) == null)
+		{
+			User? currentUser = Model.Users.Find(u => u.Username == Model.CurrentUser.Username);
+			int userLocation = Model.Users.IndexOf(currentUser);
+			if (userLocation != -1)
 			{
-				<partial name="Partials/_LeaderboardPartial" model="Model.Users[i + ((Model.PageNum - 1) * entryCount)]"/>
+				currentUser.LbPlacement = userLocation + 1;
+				currentUser.LbFilter = Model.LbFilter;
+				<partial name="Partials/_LeaderboardPartial" model="currentUser" />
 			}
 		}
-	</table>
 
-		<div class="text-center">
-			<a asp-page="/Leaderboard" class="distincttext" asp-route-Page="@Model.PageNum - 1" asp-route-Filter="@Model.filter">Previous Page</a>
-			<a asp-page="/Leaderboard" class="distincttext" asp-route-Page="@Model.PageNum + 1" asp-route-Filter="@Model.filter">Next Page</a>
-		</div>
-	</div>
+	}
+</table>
+
+@{
+	int lastPage = Model.PageNum - 1;
+	int nextPage = Model.PageNum + 1;
+}
+<a asp-page="/Leaderboard" asp-route-PageNumber="@lastPage" asp-route-Filter="@Model.Filter">Previous Page</a>
+<a asp-page="/Leaderboard" asp-route-PageNumber="@nextPage" asp-route-Filter="@Model.Filter">Next Page</a>

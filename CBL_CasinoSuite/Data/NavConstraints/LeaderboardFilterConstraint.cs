@@ -1,4 +1,6 @@
-﻿namespace CBL_CasinoSuite.Data.NavConstraints
+﻿using CBL_CasinoSuite.Data.Models;
+
+namespace CBL_CasinoSuite.Data.NavConstraints
 {
     public class LeaderboardFilterConstraint :IRouteConstraint
     {
@@ -6,7 +8,7 @@
         {
             if (values[routeKey] != null)
             {
-                if (Enum.TryParse(typeof(LeaderboardFilter), values[routeKey]?.ToString(), true, out var result) && Enum.IsDefined(typeof(LeaderboardFilter), result))
+                if (Enum.TryParse(typeof(EGameList), values[routeKey]?.ToString(), true, out var result) && Enum.IsDefined(typeof(EGameList), result))
                 {
                     return true;
                 }
@@ -14,11 +16,5 @@
             
             return false;
         }
-    }
-
-    public enum LeaderboardFilter
-    {
-        None,
-        Blackjack,
     }
 }
