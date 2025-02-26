@@ -45,5 +45,87 @@ namespace CBL_CasinoSuite.Pages.Games
             if (playerWon) Gambling.Win(BetAmount, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
             else Gambling.Lose(ref _dal, userSingleton.GetUser().Username, GAME_NAME);
         }
+
+        public IActionResult OnPostDeal()
+        {
+            List<Card> dealerCards = new List<Card>();
+            List<Card> playerCards = new List<Card>();
+        
+            playerCards.Add(deck.Draw());
+            dealerCards.Add(deck.Draw());
+            playerCards.Add(deck.Draw());
+        
+            Card faceDownCard = deck.Draw();
+            faceDownCard.FaceUp = false;
+        
+            dealerCards.Add(faceDownCard);
+        
+            bool dealerBlackjack = HasBlackjack(dealerCards);
+            bool playerBlackjack = HasBlackjack(playerCards);
+        
+            if (dealerBlackjack && !playerBlackjack)
+            {
+                // dealer wins
+            }
+            else if (!dealerBlackjack && playerBlackjack)
+            {
+                // player wins
+            }
+            else if (dealerBlackjack && playerBlackjack)
+            {
+                // both "win"
+            }
+        
+        }
+        
+        public bool HasBlackjack(List<Card> hand)
+        {
+            if (hand.Count == 2)
+            {
+                if (hand[0].Number >= 10 && hand[1].Number == 1) // if first card is 10 or face AND second card is an ace
+                {
+                    return true;
+                }
+                else if (hand[0].Number == 1 && hand[1].Number >= 10) // if first card is an ace AND second card is 10 or face
+                {
+                    return true;
+                }
+            }
+            else if (CalculateHandTotal(hand) == 21)
+            {
+                return true;
+            }
+        
+            return false;
+        }
+        
+        public int CalculateHandTotal(List<Card> hand)
+        {
+            int handTotal = 0;
+            foreach (Card card in hand)
+            {
+                if (card.Number >= 10)
+                {
+                    handTotal += 10;
+                }
+                else if (card.Number > 1)
+                {
+                    handTotal += card.Number;
+                }
+                else if (card.Value != Card.ValueSet.Unset)
+                {
+                    if (card.Value == Card.ValueSet.Low)
+                    {
+                        handTotal += 1;
+                    }
+                    if (card.Value == Card.ValueSet.High)
+                    {
+                        handTotal += 11;
+                    }
+                }
+            }
+        
+            return handTotal;
+        }
     }
 }
