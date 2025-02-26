@@ -24,17 +24,16 @@ namespace CBL_CasinoSuite.Pages.Games
 
         public IActionResult OnPostBetMoney()
         {
-            User workingUser = userSingleton.GetUser();
-
-            GameStats tempStats = workingUser.GameStatistics.First(g => g._GameName == GAME_NAME);
-            if (tempStats == null) tempStats = new GameStats(GAME_NAME);
-
-            tempStats.TotalLosings += BetAmount;
-
-            _dal.UpdateUserStatistics(workingUser.Username, tempStats);
-            _dal.UpdateUserBalance(workingUser.Username, workingUser.CurrentBalance - BetAmount);
+            Gambling.Bet(BetAmount, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
+            EndGame(false);
 
             return RedirectToAction("Get");
+        }
+
+        private void EndGame(bool playerWon)
+        {
+            if (playerWon) Gambling.Win(BetAmount, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
+            else Gambling.Lose(ref _dal, userSingleton.GetUser().Username, GAME_NAME);
         }
     }
 }
