@@ -26,10 +26,19 @@ public class Card {
         Diamonds,
         Hearts
     }
+
+    public enum ValueSet
+    {
+        Unset,
+        Low,
+        High
+    }
     
     public required CardSuit Suit { get; set; }
     
     public required int Number { get; set; }
     
     public float Scale { get; set; } = 1.0f;
+
+    public ValueSet Value { get; set; } = ValueSet.Unset;
 }
