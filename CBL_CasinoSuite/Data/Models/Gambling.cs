@@ -17,7 +17,7 @@ namespace CBL_CasinoSuite.Data.Models
             dal.UpdateUserBalance(workingUser.Username, workingUser.CurrentBalance - betAmount);
         }
 
-        public static void Win(float betAmount, ref IDal dal, string username, string gameName)
+        public static void Win(float betAmount, ref IDal dal, string username, string gameName, float winningsModifier = 1.0f)
         {
             User workingUser = dal.GetUser(username);
 
@@ -25,11 +25,11 @@ namespace CBL_CasinoSuite.Data.Models
             if (tempStats == null) tempStats = new GameStats(gameName);
 
             tempStats.TotalLosings -= betAmount;
-            tempStats.TotalWinnings += (betAmount);
+            tempStats.TotalWinnings += (betAmount * winningsModifier);
             tempStats.TotalWins += 1;
 
             dal.UpdateUserStatistics(workingUser.Username, tempStats);
-            dal.UpdateUserBalance(workingUser.Username, workingUser.CurrentBalance + (2 * betAmount));
+            dal.UpdateUserBalance(workingUser.Username, workingUser.CurrentBalance + betAmount + (betAmount * winningsModifier));
         }
 
         public static void Lose(ref IDal dal, string username, string gameName)
