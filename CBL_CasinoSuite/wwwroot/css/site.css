@@ -17,6 +17,31 @@ html {
   min-height: 100%;
 }
 
+.board {
+  background-image: url("../img/felt.jpg");
+  background-repeat: repeat;
+  background-size: 20%;
+  background-position: center;
+  background-color: #33bb66;
+}
+
+.wood .horizontal {
+  background-image: url("../img/wood.jpg");
+  background-repeat: repeat;
+  background-size: 20%;
+  background-position: center;
+  background-color: #33bb66;
+}
+
+.wood .vertical {
+  background-image: url("../img/wood.jpg");
+  background-repeat: repeat;
+  background-size: 20%;
+  background-position: center;
+  background-color: #33bb66;
+  transform: rotate(90deg);
+}
+
 body {
   margin-bottom: 60px;
 }
