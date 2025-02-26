@@ -5,36 +5,40 @@
 	ViewData["Title"] = "Leaderboard";
 }
 
-<div class="text-center">
-	<h1 class="display-4">Leaderboard</h1>
-	<label for="Filter">Filter:</label>
-	<select name="Filter">
-		<option>Top (Total Balance)</option>
-		<option>Top (Blackjack)</option>
-	</select>
-</div>
+<div class="board wood-border distincttext">
+	<div class="text-center">
+		<h1 class="display-4">Leaderboard</h1>
+		<label for="Filter">Filter:</label>
+		<select name="Filter">
+			<option>Top (Total Balance)</option>
+			<option>Top (Blackjack)</option>
+		</select>
+	</div>
 
-<table>
-	<tr>
-		<td>User</td>
-		<td>Overall Winnings</td>
-		<td>Total Wins</td>
-		<td>Total Winnings</td>
-		<td>Total Losses</td>
-		<td>Total Losings</td>
-	</tr>
-	@{
-		int entryCount = (Model.Users.Count >= 10) ? 10 : Model.Users.Count;
+	<table class="whitetable">
+		<tr>
+			<th>User</th>
+			<th>Overall Winnings</th>
+			<th>Total Wins</th>
+			<th>Total Winnings</th>
+			<th>Total Losses</th>
+			<th>Total Losings</th>
+		</tr>
+		@{
+			int entryCount = (Model.Users.Count >= 10) ? 10 : Model.Users.Count;
 
-		// Functionality to show current user's position will be added later (hopefully)
-		// if (!string.IsNullOrEmpty(Model.CurrentUser.Username)) entryCount++;
+			// Functionality to show current user's position will be added later (hopefully)
+			// if (!string.IsNullOrEmpty(Model.CurrentUser.Username)) entryCount++;
 
-		for (int i = 0; i < entryCount; i++)
-		{
-			<partial name="Partials/_LeaderboardPartial" model="Model.Users[i + ((Model.PageNum - 1) * entryCount)]"/>
+			for (int i = 0; i < entryCount; i++)
+			{
+				<partial name="Partials/_LeaderboardPartial" model="Model.Users[i + ((Model.PageNum - 1) * entryCount)]"/>
+			}
 		}
-	}
-</table>
+	</table>
 
-<a asp-page="/Leaderboard" asp-route-Page="@Model.PageNum - 1" asp-route-Filter="@Model.filter">Previous Page</a>
-<a asp-page="/Leaderboard" asp-route-Page="@Model.PageNum + 1" asp-route-Filter="@Model.filter">Next Page</a>
+		<div class="text-center">
+			<a asp-page="/Leaderboard" class="distincttext" asp-route-Page="@Model.PageNum - 1" asp-route-Filter="@Model.filter">Previous Page</a>
+			<a asp-page="/Leaderboard" class="distincttext" asp-route-Page="@Model.PageNum + 1" asp-route-Filter="@Model.filter">Next Page</a>
+		</div>
+	</div>

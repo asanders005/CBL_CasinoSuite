@@ -4,8 +4,7 @@
 ViewData["Title"] = "Account";
 }
 
-<div class="text-center">
-
+<div class="text-center board wood-border distincttext">
     <h1 class="display-4">@Model.user.Username</h1>
     <h2>Current Balance: $@Model.user.CurrentBalance.ToString("F2")</h2>
 	<form method="post" asp-page-handler="UpdateBalance">
