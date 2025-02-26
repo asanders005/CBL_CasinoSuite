@@ -35,15 +35,24 @@ namespace CBL_CasinoSuite.Pages.Games
         public IActionResult OnPostBetMoney()
         {
             Gambling.Bet(BetAmount, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
-            EndGame(false);
 
             return RedirectToAction("Get");
         }
 
-        private void EndGame(bool playerWon)
+        private void EndGame(Gambling.EndState endState, float winningsModifier = 1.0f)
         {
-            if (playerWon) Gambling.Win(BetAmount, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
-            else Gambling.Lose(ref _dal, userSingleton.GetUser().Username, GAME_NAME);
+            switch (endState)
+            {
+                case Gambling.EndState.Won:
+                    Gambling.Win(BetAmount, ref _dal, userSingleton.GetUser().Username, GAME_NAME, winningsModifier);
+                    break;
+                case Gambling.EndState.Lost:
+                    Gambling.Lose(ref _dal, userSingleton.GetUser().Username, GAME_NAME);
+                    break;
+                case Gambling.EndState.Tied:
+                    Gambling.Tie(BetAmount, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
+                    break;
+            }
         }
 
         public IActionResult OnPostDeal()
@@ -65,17 +74,19 @@ namespace CBL_CasinoSuite.Pages.Games
         
             if (dealerBlackjack && !playerBlackjack)
             {
-                // dealer wins
+                EndGame(Gambling.EndState.Lost);
             }
             else if (!dealerBlackjack && playerBlackjack)
             {
-                // player wins
+                EndGame(Gambling.EndState.Won, 1.5f);
             }
             else if (dealerBlackjack && playerBlackjack)
             {
-                // both "win"
+                EndGame(Gambling.EndState.Tied);
             }
-        
+
+            return RedirectToAction("Get");
+
         }
         
         public bool HasBlackjack(List<Card> hand)

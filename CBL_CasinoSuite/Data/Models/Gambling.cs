@@ -4,6 +4,13 @@ namespace CBL_CasinoSuite.Data.Models
 {
     public static class Gambling
     {
+        public enum EndState
+        {
+            Won,
+            Lost,
+            Tied
+        }
+
         public static void Bet(float betAmount, ref IDal dal, string username, string gameName)
         {
             User workingUser = dal.GetUser(username);
