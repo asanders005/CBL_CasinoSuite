@@ -1,17 +1,40 @@
-﻿@page
+﻿@page "/Leaderboard/{pageNumber:pageConstraint=page1}/{filter:leaderboardFilterConstraint=none}"
+@using CBL_CasinoSuite.Data.Models
 @model CBL_CasinoSuite.Pages.Leaderboard
 @{
-ViewData["Title"] = "Leaderboard";
+	ViewData["Title"] = "Leaderboard";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Leaderboard</h1>
-    <label for="Filter">Filter:</label>
-    <select name="Filter">
-        <option>Top (Total Balance)</option>
-        <option>Top (Blackjack)</option>
-    </select>
-    <h3>Player 1 - $25000</h3>
-    <h3>Player 2 - $5000</h3>
-    <h3>Player 3 - $-50000</h3>
+	<h1 class="display-4">Leaderboard</h1>
+	<label for="Filter">Filter:</label>
+	<select name="Filter">
+		<option>Top (Total Balance)</option>
+		<option>Top (Blackjack)</option>
+	</select>
 </div>
+
+<table>
+	<tr>
+		<td>User</td>
+		<td>Overall Winnings</td>
+		<td>Total Wins</td>
+		<td>Total Winnings</td>
+		<td>Total Losses</td>
+		<td>Total Losings</td>
+	</tr>
+	@{
+		int entryCount = (Model.Users.Count >= 10) ? 10 : Model.Users.Count;
+
+		// Functionality to show current user's position will be added later (hopefully)
+		// if (!string.IsNullOrEmpty(Model.CurrentUser.Username)) entryCount++;
+
+		for (int i = 0; i < entryCount; i++)
+		{
+			<partial name="Partials/_LeaderboardPartial" model="Model.Users[i + ((Model.PageNum - 1) * entryCount)]"/>
+		}
+	}
+</table>
+
+<a asp-page="/Leaderboard" asp-route-Page="@Model.PageNum - 1" asp-route-Filter="@Model.filter">Previous Page</a>
+<a asp-page="/Leaderboard" asp-route-Page="@Model.PageNum + 1" asp-route-Filter="@Model.filter">Next Page</a>
