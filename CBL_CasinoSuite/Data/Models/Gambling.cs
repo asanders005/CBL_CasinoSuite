@@ -43,5 +43,18 @@ namespace CBL_CasinoSuite.Data.Models
 
             dal.UpdateUserStatistics(workingUser.Username, tempStats);
         }
+
+        public static void Tie(float betAmount, ref IDal dal, string username, string gameName)
+        {
+            User workingUser = dal.GetUser(username);
+
+            GameStats tempStats = workingUser.GameStatistics.First(g => g._GameName == gameName);
+            if (tempStats == null) tempStats = new GameStats(gameName);
+
+            tempStats.TotalLosings -= betAmount;
+
+            dal.UpdateUserStatistics(workingUser.Username, tempStats);
+            dal.UpdateUserBalance(workingUser.Username, workingUser.CurrentBalance + betAmount);
+        }
     }
 }
