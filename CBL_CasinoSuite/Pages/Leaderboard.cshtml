@@ -5,64 +5,69 @@
 	ViewData["Title"] = "Leaderboard";
 }
 
-<div class="text-center">
-	<h1 class="display-4">Leaderboard</h1>
-	<label for="Filter">Filter:</label>
-	<form method="post" asp-page-handler="UpdateFilter">
-		<select asp-for="@Model.Filter" onchange="this.form.submit()">
-			<option value="@EGameList.None.ToString()">Top (Total Balance)</option>
-			<option value="@EGameList.Blackjack.ToString()">Top (Blackjack)</option>
-		</select>
-	</form>
-</div>
+<div class="wood-border distincttext board">
+	<div class="text-center">
+		<h1 class="display-4">Leaderboard</h1>
+		<label for="Filter">Filter:</label>
+		<form method="post" asp-page-handler="UpdateFilter">
+			<select asp-for="@Model.Filter" onchange="this.form.submit()">
+				<option value="@EGameList.None.ToString()">Top (Total Balance)</option>
+				<option value="@EGameList.Blackjack.ToString()">Top (Blackjack)</option>
+			</select>
+		</form>
+	</div>
 
-<table>
-	<tr>
-		<td>Placement</td>
-		<td>User</td>
-		<td>Overall Winnings</td>
-		<td>Total Wins</td>
-		<td>Total Winnings</td>
-		<td>Total Losses</td>
-		<td>Total Losings</td>
-	</tr>
-	@{
-		int userCount = Model.Users.Count;
-		int entryCount = (userCount >= 10) ? (userCount / 10 >= Model.PageNum) ? 10 : userCount % 10 : userCount;
+	<table class="whitetable">
+		<tr>
+			<td>Placement</td>
+			<td>User</td>
+			<td>Overall Winnings</td>
+			<td>Total Wins</td>
+			<td>Total Winnings</td>
+			<td>Total Losses</td>
+			<td>Total Losings</td>
+		</tr>
+		@{
+			int userCount = Model.Users.Count;
+			int entryCount = (userCount >= 10) ? (userCount / 10 >= Model.PageNum) ? 10 : userCount % 10 : userCount;
 
-		// Functionality to show current user's position will be added later (hopefully)
-		// if (!string.IsNullOrEmpty(Model.CurrentUser.Username)) entryCount++;
+			// Functionality to show current user's position will be added later (hopefully)
+			// if (!string.IsNullOrEmpty(Model.CurrentUser.Username)) entryCount++;
 
-		List<User> displayedUsers = new List<User>();
+			List<User> displayedUsers = new List<User>();
 
-		for (int i = 0; i < entryCount; i++)
-		{
-			int currentUser = i + ((Model.PageNum - 1) * 10);
-
-			Model.Users[currentUser].LbPlacement = currentUser + 1;
-			Model.Users[currentUser].LbFilter = Model.LbFilter;
-			displayedUsers.Add(Model.Users[currentUser]);
-
-			<partial name="Partials/_LeaderboardPartial" model="Model.Users[currentUser]" />
-		}
-		if (!string.IsNullOrEmpty(Model.CurrentUser.Username) && displayedUsers.Find(u => u.Username == Model.CurrentUser.Username) == null)
-		{
-			User? currentUser = Model.Users.Find(u => u.Username == Model.CurrentUser.Username);
-			int userLocation = Model.Users.IndexOf(currentUser);
-			if (userLocation != -1)
+			for (int i = 0; i < entryCount; i++)
 			{
-				currentUser.LbPlacement = userLocation + 1;
-				currentUser.LbFilter = Model.LbFilter;
-				<partial name="Partials/_LeaderboardPartial" model="currentUser" />
+				int currentUser = i + ((Model.PageNum - 1) * 10);
+
+				Model.Users[currentUser].LbPlacement = currentUser + 1;
+				Model.Users[currentUser].LbFilter = Model.LbFilter;
+				displayedUsers.Add(Model.Users[currentUser]);
+
+				<partial name="Partials/_LeaderboardPartial" model="Model.Users[currentUser]" />
 			}
+			if (!string.IsNullOrEmpty(Model.CurrentUser.Username) && displayedUsers.Find(u => u.Username == Model.CurrentUser.Username) == null)
+			{
+				User? currentUser = Model.Users.Find(u => u.Username == Model.CurrentUser.Username);
+				int userLocation = Model.Users.IndexOf(currentUser);
+				if (userLocation != -1)
+				{
+					currentUser.LbPlacement = userLocation + 1;
+					currentUser.LbFilter = Model.LbFilter;
+					<partial name="Partials/_LeaderboardPartial" model="currentUser" />
+				}
+			}
+
 		}
+	</table>
 
+	@{
+		int lastPage = Model.PageNum - 1;
+		int nextPage = Model.PageNum + 1;
 	}
-</table>
-
-@{
-	int lastPage = Model.PageNum - 1;
-	int nextPage = Model.PageNum + 1;
-}
-<a asp-page="/Leaderboard" asp-route-PageNumber="@lastPage" asp-route-Filter="@Model.Filter">Previous Page</a>
-<a asp-page="/Leaderboard" asp-route-PageNumber="@nextPage" asp-route-Filter="@Model.Filter">Next Page</a>
+	
+	<div class="text-center">
+		<a asp-page="/Leaderboard" class="distincttext" asp-route-PageNumber="@lastPage" asp-route-Filter="@Model.Filter">Previous Page</a>
+		<a asp-page="/Leaderboard" class="distincttext" asp-route-PageNumber="@nextPage" asp-route-Filter="@Model.Filter">Next Page</a>
+	</div>
+</div>
