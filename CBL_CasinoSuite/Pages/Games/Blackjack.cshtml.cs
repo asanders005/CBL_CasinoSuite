@@ -22,6 +22,16 @@ namespace CBL_CasinoSuite.Pages.Games
         [BindProperty]
         public float BetAmount { get; set; }
 
+        public IActionResult OnGet()
+        {
+            if (string.IsNullOrEmpty(userSingleton.GetUser().Username))
+            {
+                return RedirectToPage("/SignIn");
+            }
+
+            return null;
+        }
+
         public IActionResult OnPostBetMoney()
         {
             Gambling.Bet(BetAmount, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
