@@ -2,6 +2,7 @@
 @model User
 
 <tr>
+	<td>@Model.LbPlacement</td>
 	<td>@Model.Username</td>
 	@{
 		float totalChange = 0;
@@ -9,13 +10,25 @@
 		float totalWinnings = 0;
 		int totalLosses = 0;
 		float totalLosings = 0;
-		foreach(var stat in Model.GameStatistics)
+		if (Model.LbFilter != EGameList.None)
 		{
-			totalChange += stat.TotalWinnings - stat.TotalLosings;
-			totalWins += stat.TotalWins;
-			totalWinnings += stat.TotalWinnings;
-			totalLosses += stat.TotalLosses;
-			totalLosings += stat.TotalLosings;
+			GameStats currentStat = Model.GameStatistics.Find(stat => stat._GameName == Model.LbFilter.ToString());
+			totalChange = currentStat.TotalWinnings - currentStat.TotalLosings;
+			totalWins = currentStat.TotalWins;
+			totalWinnings = currentStat.TotalWinnings;
+			totalLosses = currentStat.TotalLosses;
+			totalLosings= currentStat.TotalLosings;
+		}
+		else
+		{
+			foreach (var stat in Model.GameStatistics)
+			{
+				totalChange += stat.TotalWinnings - stat.TotalLosings;
+				totalWins += stat.TotalWins;
+				totalWinnings += stat.TotalWinnings;
+				totalLosses += stat.TotalLosses;
+				totalLosings += stat.TotalLosings;
+			}
 		}
 	}
     <td>@totalChange.ToString("C2")</td>
