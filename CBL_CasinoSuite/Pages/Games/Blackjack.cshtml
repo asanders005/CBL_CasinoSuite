@@ -3,11 +3,41 @@
 @{
 }
 
-<div class="text-center">
-    <h1 class="display-4">@ViewData["Title"]</h1>
-    <form method="post" asp-page-handler="BetMoney">
-        <input asp-for="@Model.BetAmount" type="number" placeholder="0.00" class="textfield" />
-        <br />
-        <button type="submit" class="buttonfield">Bet Money</button>
-    </form>
-</div>
+@{
+    if (BlackjackModel.BetAmount == 0)
+    {
+        <div class="text-center">
+            <h1 class="display-4">@ViewData["Title"]</h1>
+            <form method="post" asp-page-handler="BetMoney">
+                <input asp-for="@Model.BetAmountInput" type="number" placeholder="0.00" class="textfield" />
+                <br />
+                <button type="submit" class="buttonfield">Bet Money</button>
+            </form>
+        </div>
+    }
+    else
+    {
+        <h1>bblackjakc: @BlackjackModel.BetAmount</h1>
+   
+        <h2>Player's cards:</h2>
+        foreach (Data.Models.Card card in BlackjackModel.playerCards)
+        {
+            <p>@card.ToString()</p>
+        }
+
+        <h2>Dealer's cards:</h2>
+        foreach (Data.Models.Card card in BlackjackModel.dealerCards)
+        {
+            <p>@card.ToString()</p>
+        }
+
+        <form asp-page-handler="button" method="Hit">
+            <button>Hit</button>
+        </form>
+        <form asp-page-handler="button" method="Stand">
+            <button>Stand</button>
+        </form>
+    }
+
+}
+

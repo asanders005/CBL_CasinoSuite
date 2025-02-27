@@ -20,7 +20,12 @@ namespace CBL_CasinoSuite.Pages.Games
         Deck deck = new Deck();
 
         [BindProperty]
-        public float BetAmount { get; set; }
+        public float BetAmountInput { get; set; } = 0;
+
+        public static float BetAmount { get; private set; } = 0;
+
+        public static List<Card> dealerCards = new List<Card>();
+        public static List<Card> playerCards = new List<Card>();
 
         public IActionResult OnGet()
         {
@@ -34,9 +39,15 @@ namespace CBL_CasinoSuite.Pages.Games
 
         public IActionResult OnPostBetMoney()
         {
-            Gambling.Bet(BetAmount, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
+            if (BetAmountInput != 0)
+            {
+                Gambling.Bet(BetAmountInput, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
+                BetAmount = BetAmountInput;
+                Deal();
+                return RedirectToAction("Get");
+            }
 
-            return RedirectToAction("Get");
+            return null;
         }
 
         private void EndGame(Gambling.EndState endState, float winningsModifier = 1.0f)
@@ -44,22 +55,19 @@ namespace CBL_CasinoSuite.Pages.Games
             switch (endState)
             {
                 case Gambling.EndState.Won:
-                    Gambling.Win(BetAmount, ref _dal, userSingleton.GetUser().Username, GAME_NAME, winningsModifier);
+                    Gambling.Win(BetAmountInput, ref _dal, userSingleton.GetUser().Username, GAME_NAME, winningsModifier);
                     break;
                 case Gambling.EndState.Lost:
                     Gambling.Lose(ref _dal, userSingleton.GetUser().Username, GAME_NAME);
                     break;
                 case Gambling.EndState.Tied:
-                    Gambling.Tie(BetAmount, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
+                    Gambling.Tie(BetAmountInput, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
                     break;
             }
         }
 
-        public IActionResult OnPostDeal()
+        public void Deal()
         {
-            List<Card> dealerCards = new List<Card>();
-            List<Card> playerCards = new List<Card>();
-        
             playerCards.Add(deck.Draw());
             dealerCards.Add(deck.Draw());
             playerCards.Add(deck.Draw());
@@ -84,9 +92,6 @@ namespace CBL_CasinoSuite.Pages.Games
             {
                 EndGame(Gambling.EndState.Tied);
             }
-
-            return RedirectToAction("Get");
-
         }
         
         public bool HasBlackjack(List<Card> hand)

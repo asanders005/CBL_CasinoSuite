@@ -41,4 +41,29 @@ public class Card {
     public float Scale { get; set; } = 1.0f;
 
     public ValueSet Value { get; set; } = ValueSet.Unset;
+
+    public override string ToString()
+    {
+        string number;
+        switch (Number)
+        {
+            case 1:
+                number = "Ace";
+                break;
+            case 11:
+                number = "Jack";
+                break;
+            case 12:
+                number = "Queen";
+                break;
+            case 13:
+                number = "King";
+                break;
+            default:
+                number = Number.ToString();
+                break;
+        }
+
+        return number + " of " + Suit.ToString();
+    }
 }
