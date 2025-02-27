@@ -89,3 +89,18 @@ body {
   border-radius: 50px;
   font-size: 1em;
 }
+
+.blacklink {
+    text-decoration: none;
+    color: black;
+}
+
+.lightpadding {
+    padding: 3px;
+}
+
+.homelogo {
+    max-height: 50px;
+    object-fit: contain;
+    margin: 3px;
+}
