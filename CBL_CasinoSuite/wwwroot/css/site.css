@@ -98,3 +98,9 @@ body {
 .lightpadding {
     padding: 3px;
 }
+
+.homelogo {
+    max-height: 50px;
+    object-fit: contain;
+    margin: 3px;
+}
