@@ -77,20 +77,16 @@ namespace CBL_CasinoSuite.Pages.Games
         
             Card faceDownCard = deck.Draw();
             faceDownCard.FaceUp = false;
-        
-            DealerCards.Add(faceDownCard);
+
+            dealerCards.Add(faceDownCard);
 
 
             Update();
-            
-
-            return RedirectToAction("Get");
-
         }
 
         public IActionResult OnPostHit()
         {
-            PlayerCards.Add(deck.Draw());
+            playerCards.Add(deck.Draw());
             Update();
 
             return RedirectToAction("Get");
@@ -98,9 +94,9 @@ namespace CBL_CasinoSuite.Pages.Games
 
         public IActionResult OnPostStand()
         {
-            while (CalculateHandTotal(DealerCards) < CalculateHandTotal(PlayerCards))
+            while (CalculateHandTotal(dealerCards) < CalculateHandTotal(playerCards))
             {
-                DealerCards.Add(deck.Draw());
+                dealerCards.Add(deck.Draw());
                 Update();
             }
 
@@ -109,31 +105,31 @@ namespace CBL_CasinoSuite.Pages.Games
 
         void Update()
         {
-            DealerBlackjack = HasBlackjack(DealerCards);
-            PlayerBlackjack = HasBlackjack(PlayerCards);
+            DealerBlackjack = HasBlackjack(dealerCards);
+            PlayerBlackjack = HasBlackjack(playerCards);
 
-            if ((DealerBlackjack && !PlayerBlackjack) || CalculateHandTotal(PlayerCards) > 21 || CalculateHandTotal(DealerCards) == 21)
+            if ((DealerBlackjack && !PlayerBlackjack) || CalculateHandTotal(playerCards) > 21 || CalculateHandTotal(dealerCards) == 21)
             {
-                PlayerCards.Clear();
-                DealerCards.Clear();
+                playerCards.Clear();
+                dealerCards.Clear();
                 EndGame(Gambling.EndState.Lost);
             }
             else if (!DealerBlackjack && PlayerBlackjack)
             {
-                PlayerCards.Clear();
-                DealerCards.Clear();
+                playerCards.Clear();
+                dealerCards.Clear();
                 EndGame(Gambling.EndState.Won, 1.5f);
             }
-            else if (CalculateHandTotal(DealerCards) > 21 || CalculateHandTotal(PlayerCards) == 21)
+            else if (CalculateHandTotal(dealerCards) > 21 || CalculateHandTotal(playerCards) == 21)
             {
-                PlayerCards.Clear();
-                DealerCards.Clear();
+                playerCards.Clear();
+                dealerCards.Clear();
                 EndGame(Gambling.EndState.Won);
             }
-            else if ((DealerBlackjack && PlayerBlackjack) || (CalculateHandTotal(PlayerCards) == 21 && CalculateHandTotal(DealerCards) == 21))
+            else if ((DealerBlackjack && PlayerBlackjack) || (CalculateHandTotal(playerCards) == 21 && CalculateHandTotal(dealerCards) == 21))
             {
-                PlayerCards.Clear();
-                DealerCards.Clear();
+                playerCards.Clear();
+                dealerCards.Clear();
                 EndGame(Gambling.EndState.Tied);
             }
         }
