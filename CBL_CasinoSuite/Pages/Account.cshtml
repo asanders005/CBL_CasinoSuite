@@ -1,22 +1,52 @@
 ﻿@page
 @model CBL_CasinoSuite.Pages.Account
 @{
-ViewData["Title"] = "Account";
+	ViewData["Title"] = "Account";
 }
 
 <div class="text-center board wood-border distincttext">
-    <h1 class="display-4">@Model.user.Username</h1>
-    <h2>Current Balance: $@Model.user.CurrentBalance.ToString("F2")</h2>
+	<h1 class="display-4">@Model.user.Username</h1>
+	<h2>Current Balance: @Model.user.CurrentBalance.ToString("C2")</h2>
 	<form method="post" asp-page-handler="UpdateBalance">
-        <label>Add to Balance:</label>
-        <input type="number" asp-for="UpdateBalance" placeholder="Money to Add..." step="0.01" min="1" />
-        <br />
-        <button type="submit">Update Balance</button>
-    </form>
-    <h3>(Total Gains)</h3>
-    <h3>(Detailed Wins/Losses Chart)</h3>
+		<label>Add to Balance:</label>
+		<input type="number" asp-for="UpdateBalance" placeholder="Money to Add..." step="0.01" min="1" />
+		<br />
+		<button type="submit" class="wood">Update Balance</button>
+	</form>
+	<h2>User Statistics</h2>
+	@{
+		float totalGains = 0;
+		foreach (var stat in Model.user.GameStatistics)
+		{
+			totalGains += stat.TotalWinnings - stat.TotalLosings;
+		}
+	}
+	<h3>Total Gains: @totalGains.ToString("C2")</h3>
+
+	@{
+		if (Model.user.GameStatistics.Count > 0)
+		{
+			<h3>Stats By Game:</h3>
+			<table class="whitetable">
+				<tr>
+					<td>Game</td>
+					<td>Gains</td>
+					<td>Wins</td>
+					<td>Winnings</td>
+					<td>Losses</td>
+					<td>Losings</td>
+				</tr>
+				@{
+					foreach (var stat in Model.user.GameStatistics)
+					{
+						<partial name="Partials/_PlayerStatPartial" model="stat" />
+					}
+				}
+			</table>
+		}
+	}
 
 	<form method="post" asp-page-handler="SignOut">
-		<button type="submit">Sign Out</button>
+		<button type="submit" class="wood">Sign Out</button>
 	</form>
 </div>

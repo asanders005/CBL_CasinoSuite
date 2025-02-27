@@ -21,7 +21,7 @@
 		<tr>
 			<td>Placement</td>
 			<td>User</td>
-			<td>Overall Winnings</td>
+			<td>Total Gains</td>
 			<td>Total Wins</td>
 			<td>Total Winnings</td>
 			<td>Total Losses</td>
@@ -67,7 +67,7 @@
 	}
 	
 	<div class="text-center">
-		<a asp-page="/Leaderboard" class="distincttext" asp-route-PageNumber="@lastPage" asp-route-Filter="@Model.Filter">Previous Page</a>
-		<a asp-page="/Leaderboard" class="distincttext" asp-route-PageNumber="@nextPage" asp-route-Filter="@Model.Filter">Next Page</a>
+		<a class="wood blacklink lightpadding" asp-page="/Leaderboard" class="distincttext" asp-route-PageNumber="@lastPage" asp-route-Filter="@Model.Filter">Previous Page</a>
+		<a class="wood blacklink lightpadding" asp-page="/Leaderboard" class="distincttext" asp-route-PageNumber="@nextPage" asp-route-Filter="@Model.Filter">Next Page</a>
 	</div>
 </div>
