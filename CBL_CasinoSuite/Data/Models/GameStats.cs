@@ -20,13 +20,13 @@ namespace CBL_CasinoSuite.Data.Models
         }
 
         [BsonElement("totalWins")]
-        public float TotalWins { get; set; } = 0;
+        public int TotalWins { get; set; } = 0;
 
         [BsonElement("totalWinnings")]
         public float TotalWinnings { get; set; } = 0;
 
         [BsonElement("totalLosses")]
-        public float TotalLosses { get; set; } = 0;
+        public int TotalLosses { get; set; } = 0;
 
         [BsonElement("totalLosings")]
         public float TotalLosings { get; set; } = 0;

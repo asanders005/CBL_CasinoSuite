@@ -13,10 +13,7 @@ namespace CBL_CasinoSuite.Data.Models
 
         public void SetUser(User user)
         {
-            if (!string.IsNullOrEmpty(user.Username))
-            {
-                _user = user;
-            }
+            _user = user;
         }
     }
 }

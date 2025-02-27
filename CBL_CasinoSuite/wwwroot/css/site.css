@@ -17,8 +17,61 @@ html {
   min-height: 100%;
 }
 
+.board {
+  background-image: url("../img/felt.jpg");
+  background-repeat: repeat;
+  background-size: 20%;
+  background-position: center;
+  background-color: #33bb66;
+}
+
+.distincttext {
+  color: black;
+  text-shadow: 0 0 5px rgba(0, 0, 0, .5);
+  &.distincttext:visited, .distincttext:link, .distincttext:active {
+    color: #AAAAFF;
+    text-decoration: underline;
+  }
+}
+
+table.whitetable {
+  color: white;
+  margin: 1em auto;
+  table, tr, td, th {
+    border: 3px solid white;
+    padding: 5px;
+  }
+}
+
+.dangerous {
+  color: #FF7777;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.wood {
+  background-image: url("../img/wood.jpg");
+  background-repeat: repeat;
+  background-size: 20%;
+  background-position: center;
+  background-color: #33bb66;
+  box-shadow: 0 0 5px rgba(0, 0, 0, .5);
+  &.vertical {
+    background-image: url("../img/woodvertical.jpg");
+  }
+}
+
+.wood-border {
+  border: 20px solid mediumpurple;
+  padding: 1em;
+  margin: 2em;
+  border-image: url("../img/wood-border.png") 177 round;
+  box-shadow: 0 0 5px rgba(0, 0, 0, .5);
+}
+
 body {
   margin-bottom: 60px;
+  background: darkslategray;
 }
 
 .textfield {

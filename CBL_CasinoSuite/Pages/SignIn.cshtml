@@ -4,7 +4,7 @@
 ViewData["Title"] = "Sign in";
 }
 
-<div class="text-center">
+<div class="text-center board wood-border distincttext">
     <h1 class="display-4">@ViewData["Title"]</h1>
     <form method="post" asp-page-handler="SignIn">
         <input asp-for="@Model.Username" type="text" placeholder="Username" class="textfield"/>
@@ -15,5 +15,5 @@ ViewData["Title"] = "Sign in";
 		    <br />
         <button type="submit" class="buttonfield">Sign In</button>
     </form>
-    <a asp-page="/SignUp">Register</a>
+    <a asp-page="/SignUp" class="distincttext">Register</a>
 </div>

@@ -33,6 +33,12 @@ namespace CBL_CasinoSuite.Data.Models
         [BsonElement("gameData")]
         public List<GameStats> GameStatistics { get; set; } = new();
 
+        // variable used by Leaderboard model to determine placement on the leaderboard based on current filter type
+        [BsonIgnore]
+        public int LbPlacement { get; set; }
+        [BsonIgnore]
+        public EGameList LbFilter { get; set; } = EGameList.None;
+
         public User()
         {
             Username = "";
