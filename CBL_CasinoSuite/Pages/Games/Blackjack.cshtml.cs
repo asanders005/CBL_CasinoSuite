@@ -22,6 +22,12 @@ namespace CBL_CasinoSuite.Pages.Games
         [BindProperty]
         public float BetAmount { get; set; }
 
+        public List<Card> DealerCards = new List<Card>();
+        public List<Card> PlayerCards = new List<Card>();
+
+        public bool DealerBlackjack = false;
+        public bool PlayerBlackjack = false;
+
         public IActionResult OnGet()
         {
             if (string.IsNullOrEmpty(userSingleton.GetUser().Username))
@@ -57,36 +63,71 @@ namespace CBL_CasinoSuite.Pages.Games
 
         public IActionResult OnPostDeal()
         {
-            List<Card> dealerCards = new List<Card>();
-            List<Card> playerCards = new List<Card>();
-        
-            playerCards.Add(deck.Draw());
-            dealerCards.Add(deck.Draw());
-            playerCards.Add(deck.Draw());
+            PlayerCards.Add(deck.Draw());
+            DealerCards.Add(deck.Draw());
+            PlayerCards.Add(deck.Draw());
         
             Card faceDownCard = deck.Draw();
             faceDownCard.FaceUp = false;
         
-            dealerCards.Add(faceDownCard);
-        
-            bool dealerBlackjack = HasBlackjack(dealerCards);
-            bool playerBlackjack = HasBlackjack(playerCards);
-        
-            if (dealerBlackjack && !playerBlackjack)
-            {
-                EndGame(Gambling.EndState.Lost);
-            }
-            else if (!dealerBlackjack && playerBlackjack)
-            {
-                EndGame(Gambling.EndState.Won, 1.5f);
-            }
-            else if (dealerBlackjack && playerBlackjack)
-            {
-                EndGame(Gambling.EndState.Tied);
-            }
+            DealerCards.Add(faceDownCard);
+
+
+            Update();
+            
 
             return RedirectToAction("Get");
 
+        }
+
+        public IActionResult OnPostHit()
+        {
+            PlayerCards.Add(deck.Draw());
+            Update();
+
+            return RedirectToAction("Get");
+        }
+
+        public IActionResult OnPostStand()
+        {
+            while (CalculateHandTotal(DealerCards) < CalculateHandTotal(PlayerCards))
+            {
+                DealerCards.Add(deck.Draw());
+                Update();
+            }
+
+            return RedirectToAction("Get");
+        }
+
+        void Update()
+        {
+            DealerBlackjack = HasBlackjack(DealerCards);
+            PlayerBlackjack = HasBlackjack(PlayerCards);
+
+            if ((DealerBlackjack && !PlayerBlackjack) || CalculateHandTotal(PlayerCards) > 21 || CalculateHandTotal(DealerCards) == 21)
+            {
+                PlayerCards.Clear();
+                DealerCards.Clear();
+                EndGame(Gambling.EndState.Lost);
+            }
+            else if (!DealerBlackjack && PlayerBlackjack)
+            {
+                PlayerCards.Clear();
+                DealerCards.Clear();
+                EndGame(Gambling.EndState.Won, 1.5f);
+            }
+            else if (CalculateHandTotal(DealerCards) > 21 || CalculateHandTotal(PlayerCards) == 21)
+            {
+                PlayerCards.Clear();
+                DealerCards.Clear();
+                EndGame(Gambling.EndState.Won);
+            }
+            else if ((DealerBlackjack && PlayerBlackjack) || (CalculateHandTotal(PlayerCards) == 21 && CalculateHandTotal(DealerCards) == 21))
+            {
+                PlayerCards.Clear();
+                DealerCards.Clear();
+                EndGame(Gambling.EndState.Tied);
+            }
         }
         
         public bool HasBlackjack(List<Card> hand)
@@ -102,10 +143,6 @@ namespace CBL_CasinoSuite.Pages.Games
                     return true;
                 }
             }
-            else if (CalculateHandTotal(hand) == 21)
-            {
-                return true;
-            }
         
             return false;
         }
@@ -115,23 +152,26 @@ namespace CBL_CasinoSuite.Pages.Games
             int handTotal = 0;
             foreach (Card card in hand)
             {
-                if (card.Number >= 10)
+                if (card != null)
                 {
-                    handTotal += 10;
-                }
-                else if (card.Number > 1)
-                {
-                    handTotal += card.Number;
-                }
-                else if (card.Value != Card.ValueSet.Unset)
-                {
-                    if (card.Value == Card.ValueSet.Low)
+                    if (card.Number >= 10)
                     {
-                        handTotal += 1;
+                        handTotal += 10;
                     }
-                    if (card.Value == Card.ValueSet.High)
+                    else if (card.Number > 1)
                     {
-                        handTotal += 11;
+                        handTotal += card.Number;
+                    }
+                    else if (card.Value != Card.ValueSet.Unset)
+                    {
+                        if (card.Value == Card.ValueSet.Low)
+                        {
+                            handTotal += 1;
+                        }
+                        if (card.Value == Card.ValueSet.High)
+                        {
+                            handTotal += 11;
+                        }
                     }
                 }
             }
