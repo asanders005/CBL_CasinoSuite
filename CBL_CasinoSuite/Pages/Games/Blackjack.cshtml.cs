@@ -27,8 +27,9 @@ namespace CBL_CasinoSuite.Pages.Games
         public static List<Card> dealerCards = new List<Card>();
         public static List<Card> playerCards = new List<Card>();
 
-        public bool dealerBlackjack = false;
-        public bool playerBlackjack = false;
+        private bool dealerBlackjack = false;
+        private bool playerBlackjack = false;
+        private bool hasWinner = false;
 
         public IActionResult OnGet()
         {
@@ -111,26 +112,45 @@ namespace CBL_CasinoSuite.Pages.Games
             {
                 dealerCards.Add(deck.Draw());
             }
+            if (!hasWinner)
+            {
+                if (CalculateHandTotal(playerCards) > CalculateHandTotal(dealerCards))
+                {
+                    WinGame();
+                }
+                else if (CalculateHandTotal(playerCards) < CalculateHandTotal(dealerCards))
+                {
+                    LoseGame();
+                }
+                else if (CalculateHandTotal(playerCards) == CalculateHandTotal(dealerCards))
+                {
+                    TieGame();
+                }
+            }
 
             Update();
         }
 
         void Update()
         {
-            int dealerTotal = CalculateHandTotal(dealerCards);
-            int playerTotal = CalculateHandTotal(playerCards);
+            dealerBlackjack = HasBlackjack(dealerCards);
+            playerBlackjack = HasBlackjack(playerCards);
 
-            if ((playerTotal > 21 && dealerTotal <= 21) || (dealerTotal <= 21 && playerTotal < dealerTotal))
+            if ((dealerBlackjack && !playerBlackjack) || CalculateHandTotal(playerCards) > 21 || CalculateHandTotal(dealerCards) == 21)
             {
-                EndGame(Gambling.EndState.Lost);
+                LoseGame();
             }
-            else if ((dealerTotal > 21 && playerTotal <= 21) || playerTotal == 21)
+            else if (!dealerBlackjack && playerBlackjack)
             {
-                EndGame(Gambling.EndState.Won);
+                WinGame(1.5f);
             }
-            else if ((dealerBlackjack && playerBlackjack) || playerCards == dealerCards)
+            else if (CalculateHandTotal(dealerCards) > 21 || CalculateHandTotal(playerCards) == 21)
             {
-                EndGame(Gambling.EndState.Tied);
+                WinGame();
+            }
+            else if ((dealerBlackjack && playerBlackjack) || (CalculateHandTotal(playerCards) == 21 && CalculateHandTotal(dealerCards) == 21))
+            {
+                TieGame();
             }
         }
         
@@ -181,6 +201,30 @@ namespace CBL_CasinoSuite.Pages.Games
             }
         
             return handTotal;
+        }
+
+        public void WinGame(float winMod = 1.0f)
+        {
+            playerCards.Clear();
+            dealerCards.Clear();
+            hasWinner = true;
+            EndGame(Gambling.EndState.Won, winMod);
+        }
+
+        public void LoseGame()
+        {
+            playerCards.Clear();
+            dealerCards.Clear();
+            hasWinner = true;
+            EndGame(Gambling.EndState.Lost);
+        }
+
+        public void TieGame()
+        {
+            playerCards.Clear();
+            dealerCards.Clear();
+            hasWinner = true;
+            EndGame(Gambling.EndState.Tied);
         }
     }
 }
