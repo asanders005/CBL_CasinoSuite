@@ -31,13 +31,26 @@
             <p>@card.ToString()</p>
         }
 
-        <form asp-page-handler="Hit" method="post">
-            <button>Hit</button>
-        </form>
-        <form asp-page-handler="Stand" method="post">
-            <button>Stand</button>
-        </form>
+        if (BlackjackModel.HasWinner == false)
+        {
+            <form asp-page-handler="Hit" method="post">
+                <button>Hit</button>
+            </form>
+            <form asp-page-handler="Stand" method="post">
+                <button>Stand</button>
+            </form>
+        }
+        else
+        {
+            <form asp-page-handler="PlayAgain" method="post">
+                <button>Play Again</button>
+            </form>
+        }
+
     }
 
+    <p>Player: @Model.CalculateHandTotal(BlackjackModel.playerCards)</p>
+    <p>Dealer: @Model.CalculateHandTotal(BlackjackModel.dealerCards)</p>
+    <p>Winner: @BlackjackModel.winner</p>
 }
 

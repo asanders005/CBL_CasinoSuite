@@ -27,9 +27,9 @@ namespace CBL_CasinoSuite.Pages.Games
         public static List<Card> dealerCards = new List<Card>();
         public static List<Card> playerCards = new List<Card>();
 
-        private bool dealerBlackjack = false;
-        private bool playerBlackjack = false;
-        private bool hasWinner = false;
+        public static bool HasWinner { get; private set; }
+
+        public static string winner = "none";
 
         public IActionResult OnGet()
         {
@@ -56,6 +56,8 @@ namespace CBL_CasinoSuite.Pages.Games
 
         private void EndGame(Gambling.EndState endState, float winningsModifier = 1.0f)
         {
+            HasWinner = true;
+
             switch (endState)
             {
                 case Gambling.EndState.Won:
@@ -68,9 +70,6 @@ namespace CBL_CasinoSuite.Pages.Games
                     Gambling.Tie(BetAmountInput, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
                     break;
             }
-
-            playerCards.Clear();
-            dealerCards.Clear();
         }
 
         public void Deal()
@@ -84,12 +83,12 @@ namespace CBL_CasinoSuite.Pages.Games
 
             dealerCards.Add(faceDownCard);
 
-            dealerBlackjack = HasBlackjack(dealerCards);
-            playerBlackjack = HasBlackjack(playerCards);
+            bool dealerBlackjack = HasBlackjack(dealerCards);
+            bool playerBlackjack = HasBlackjack(playerCards);
 
-            if (dealerBlackjack && playerBlackjack) EndGame(Gambling.EndState.Tied);
-            else if (!dealerBlackjack && playerBlackjack) EndGame(Gambling.EndState.Won, 1.5f);
-            else if (dealerBlackjack && !playerBlackjack) EndGame(Gambling.EndState.Lost);
+            if (dealerBlackjack && playerBlackjack) TieGame();
+            else if (!dealerBlackjack && playerBlackjack) WinGame(1.5f);
+            else if (dealerBlackjack && !playerBlackjack) LoseGame();
         }
 
         public IActionResult OnPostHit()
@@ -112,43 +111,24 @@ namespace CBL_CasinoSuite.Pages.Games
             {
                 dealerCards.Add(deck.Draw());
             }
-            if (!hasWinner)
-            {
-                if (CalculateHandTotal(playerCards) > CalculateHandTotal(dealerCards))
-                {
-                    WinGame();
-                }
-                else if (CalculateHandTotal(playerCards) < CalculateHandTotal(dealerCards))
-                {
-                    LoseGame();
-                }
-                else if (CalculateHandTotal(playerCards) == CalculateHandTotal(dealerCards))
-                {
-                    TieGame();
-                }
-            }
 
             Update();
         }
 
         void Update()
         {
-            dealerBlackjack = HasBlackjack(dealerCards);
-            playerBlackjack = HasBlackjack(playerCards);
+            int dealerTotal = CalculateHandTotal(dealerCards);
+            int playerTotal = CalculateHandTotal(playerCards);
 
-            if ((dealerBlackjack && !playerBlackjack) || CalculateHandTotal(playerCards) > 21 || CalculateHandTotal(dealerCards) == 21)
+            if (dealerTotal <= 21 && (playerTotal > 21 || playerTotal < dealerTotal))
             {
                 LoseGame();
             }
-            else if (!dealerBlackjack && playerBlackjack)
-            {
-                WinGame(1.5f);
-            }
-            else if (CalculateHandTotal(dealerCards) > 21 || CalculateHandTotal(playerCards) == 21)
+            else if (playerTotal <= 21 && (dealerTotal > 21 || dealerTotal < playerTotal))
             {
                 WinGame();
             }
-            else if ((dealerBlackjack && playerBlackjack) || (CalculateHandTotal(playerCards) == 21 && CalculateHandTotal(dealerCards) == 21))
+            else
             {
                 TieGame();
             }
@@ -174,6 +154,7 @@ namespace CBL_CasinoSuite.Pages.Games
         public int CalculateHandTotal(List<Card> hand)
         {
             int handTotal = 0;
+            int aces = 0;
             foreach (Card card in hand)
             {
                 if (card != null)
@@ -186,18 +167,25 @@ namespace CBL_CasinoSuite.Pages.Games
                     {
                         handTotal += card.Number;
                     }
-                    else if (card.Value != Card.ValueSet.Unset)
+                    else if (card.Number == 1)
                     {
-                        if (card.Value == Card.ValueSet.Low)
-                        {
-                            handTotal += 1;
-                        }
-                        if (card.Value == Card.ValueSet.High)
-                        {
-                            handTotal += 11;
-                        }
+                        aces++;
                     }
                 }
+            }
+
+            for (int i = 0; i < aces; i++)
+            {
+                if (handTotal + (aces - 1) + 11 <= 21)
+                {
+                    handTotal += 11;
+                }
+                else
+                {
+                    handTotal++;
+                }
+
+                aces--;
             }
         
             return handTotal;
@@ -205,26 +193,31 @@ namespace CBL_CasinoSuite.Pages.Games
 
         public void WinGame(float winMod = 1.0f)
         {
-            playerCards.Clear();
-            dealerCards.Clear();
-            hasWinner = true;
+            winner = "player";
             EndGame(Gambling.EndState.Won, winMod);
         }
 
         public void LoseGame()
         {
-            playerCards.Clear();
-            dealerCards.Clear();
-            hasWinner = true;
+            winner = "house";
             EndGame(Gambling.EndState.Lost);
         }
 
         public void TieGame()
         {
+            winner = "tie";
+            EndGame(Gambling.EndState.Tied);
+        }
+
+        public IActionResult OnPostPlayAgain()
+        {
             playerCards.Clear();
             dealerCards.Clear();
-            hasWinner = true;
-            EndGame(Gambling.EndState.Tied);
+            HasWinner = false;
+            BetAmount = 0;
+            BetAmountInput = 0;
+
+            return RedirectToAction("Get");
         }
     }
 }
