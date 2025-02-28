@@ -27,8 +27,9 @@ namespace CBL_CasinoSuite.Pages.Games
         public static List<Card> dealerCards = new List<Card>();
         public static List<Card> playerCards = new List<Card>();
 
-        public bool DealerBlackjack = false;
-        public bool PlayerBlackjack = false;
+        private bool dealerBlackjack = false;
+        private bool playerBlackjack = false;
+        private bool hasWinner = false;
 
         public IActionResult OnGet()
         {
@@ -94,10 +95,25 @@ namespace CBL_CasinoSuite.Pages.Games
 
         public IActionResult OnPostStand()
         {
-            while (CalculateHandTotal(dealerCards) < CalculateHandTotal(playerCards))
+            while (CalculateHandTotal(dealerCards) < 17)
             {
-                dealerCards.Add(deck.Draw());
+                dealerCards.Add(deck.Draw()); 
                 Update();
+            }
+            if (!hasWinner)
+            {
+                if (CalculateHandTotal(playerCards) > CalculateHandTotal(dealerCards))
+                {
+                    WinGame();
+                }
+                else if (CalculateHandTotal(playerCards) < CalculateHandTotal(dealerCards))
+                {
+                    LoseGame();
+                }
+                else if (CalculateHandTotal(playerCards) == CalculateHandTotal(dealerCards))
+                {
+                    TieGame();
+                }
             }
 
             return RedirectToAction("Get");
@@ -105,32 +121,24 @@ namespace CBL_CasinoSuite.Pages.Games
 
         void Update()
         {
-            DealerBlackjack = HasBlackjack(dealerCards);
-            PlayerBlackjack = HasBlackjack(playerCards);
+            dealerBlackjack = HasBlackjack(dealerCards);
+            playerBlackjack = HasBlackjack(playerCards);
 
-            if ((DealerBlackjack && !PlayerBlackjack) || CalculateHandTotal(playerCards) > 21 || CalculateHandTotal(dealerCards) == 21)
+            if ((dealerBlackjack && !playerBlackjack) || CalculateHandTotal(playerCards) > 21 || CalculateHandTotal(dealerCards) == 21)
             {
-                playerCards.Clear();
-                dealerCards.Clear();
-                EndGame(Gambling.EndState.Lost);
+                LoseGame();
             }
-            else if (!DealerBlackjack && PlayerBlackjack)
+            else if (!dealerBlackjack && playerBlackjack)
             {
-                playerCards.Clear();
-                dealerCards.Clear();
-                EndGame(Gambling.EndState.Won, 1.5f);
+                WinGame(1.5f);
             }
             else if (CalculateHandTotal(dealerCards) > 21 || CalculateHandTotal(playerCards) == 21)
             {
-                playerCards.Clear();
-                dealerCards.Clear();
-                EndGame(Gambling.EndState.Won);
+                WinGame();
             }
-            else if ((DealerBlackjack && PlayerBlackjack) || (CalculateHandTotal(playerCards) == 21 && CalculateHandTotal(dealerCards) == 21))
+            else if ((dealerBlackjack && playerBlackjack) || (CalculateHandTotal(playerCards) == 21 && CalculateHandTotal(dealerCards) == 21))
             {
-                playerCards.Clear();
-                dealerCards.Clear();
-                EndGame(Gambling.EndState.Tied);
+                TieGame();
             }
         }
         
@@ -181,6 +189,30 @@ namespace CBL_CasinoSuite.Pages.Games
             }
         
             return handTotal;
+        }
+
+        public void WinGame(float winMod = 1.0f)
+        {
+            playerCards.Clear();
+            dealerCards.Clear();
+            hasWinner = true;
+            EndGame(Gambling.EndState.Won, winMod);
+        }
+
+        public void LoseGame()
+        {
+            playerCards.Clear();
+            dealerCards.Clear();
+            hasWinner = true;
+            EndGame(Gambling.EndState.Lost);
+        }
+
+        public void TieGame()
+        {
+            playerCards.Clear();
+            dealerCards.Clear();
+            hasWinner = true;
+            EndGame(Gambling.EndState.Tied);
         }
     }
 }
