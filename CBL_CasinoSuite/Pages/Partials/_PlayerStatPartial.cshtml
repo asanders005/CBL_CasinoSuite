@@ -1,0 +1,14 @@
+﻿@using Data.Models
+@model GameStats
+
+<tr>
+	<td>@Model._GameName</td>
+	@{
+		float totalChange = Model.TotalWinnings - Model.TotalLosings;
+	}
+	<td>@totalChange.ToString("C2")</td>
+	<td>@Model.TotalWins</td>
+	<td>@Model.TotalWinnings.ToString("C2")</td>
+	<td>@Model.TotalLosses</td>
+	<td>@Model.TotalLosings.ToString("C2")</td>
+</tr>

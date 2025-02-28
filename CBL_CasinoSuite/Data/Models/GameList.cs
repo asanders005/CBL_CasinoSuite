@@ -1,18 +1,11 @@
 ﻿using CBL_CasinoSuite.Data.Interfaces;
-using CBL_CasinoSuite.Pages.Games;
+using CBL_CasinoSuite.Data.NavConstraints;
 
 namespace CBL_CasinoSuite.Data.Models
 {
-    public class GameList : IGameList
+    public enum EGameList
     {
-        private List<string> _games = new List<string>
-            {
-                BlackjackModel.GAME_NAME
-            };
-
-        public List<string> GetGameList()
-        {
-            return _games;
-        }
+        None = -1,
+        Blackjack,
     }
 }
