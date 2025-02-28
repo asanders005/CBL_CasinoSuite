@@ -6,7 +6,11 @@ ViewData["Title"] = "Games";
 
 <div class="text-center wood-border board">
     <h2 class="display-4 distincttext">@ViewData["Title"]</h2>
-    <partial name="Partials/_LibraryGame"/>
-    <partial name="Partials/_LibraryGame"/>
-    <partial name="Partials/_LibraryGame"/>
+
+	@{
+		foreach(var model in Model.PageModels)
+		{
+			<partial name="Partials/_LibraryGame" model="model"/>
+		}
+	}
 </div>
