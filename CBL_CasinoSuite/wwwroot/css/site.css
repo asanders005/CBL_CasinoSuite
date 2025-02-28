@@ -74,6 +74,100 @@ body {
   background: darkslategray;
 }
 
+div.card {
+  display: flex;
+  padding: 1em;
+  flex-direction: row;
+  background-color: white;
+  border: 2px solid black;
+  border-radius: 0.75em;
+  width: 10em;
+  height: 14em;
+  h1 {
+    font-size: 4em;
+    color: white;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 1);
+    position: relative;
+    margin: auto;
+    text-align: center;
+  }
+  img {
+    width: 3em;
+    height: 3em;
+    margin-top: -1.5em;
+    margin-left: -1.5em;
+    position: absolute;
+    &.c1n1 { /* Aces */
+      top: 50%;
+      left: 50%;
+      width: 8em;
+      height: 8em;
+      margin-top: -4em;
+      margin-left: -4em;
+    }
+    &.c3n3, &.c5n5, &.c7n7, &.c9n9 { /* Center middle */
+      top: 50%;
+      left: 50%;
+    }
+    &.c2n1, &.c3n1 { /* Center top */
+      top: 15%;
+      left: 50%;
+    }
+    &.c2n2, &.c3n2 { /* Center bottom */
+      top: 85%;
+      left: 50%;
+    }
+    &.c4n1, &.c5n1, &.c6n1, &.c7n1, &.c8n1, &.c9n1, &.c10n1 { /* Top left */
+      top: 15%;
+      left: 15%;
+    }
+    &.c4n2, &.c5n2, &.c6n2, &.c7n2, &.c8n2, &.c9n2, &.c10n2 { /* Top right */
+      top: 15%;
+      left: 85%;
+    }
+    &.c4n3, &.c5n3, &.c6n3, &.c7n3, &.c8n3, &.c9n3, &.c10n3 { /* Bottom left */
+      top: 85%;
+      left: 15%;
+    }
+    &.c4n4, &.c5n4, &.c6n4, &.c7n4, &.c8n4, &.c9n4, &.c10n4 { /* Bottom right */
+      top: 85%;
+      left: 85%;
+    }
+    &.c6n5, &.c7n5 { /* Middle left */
+      top: 50%;
+      left: 15%;
+    }
+    &.c6n6, &.c7n6 { /* Middle left */
+      top: 50%;
+      left: 85%;
+    }
+    &.c8n5, &.c9n5, &.c10n5 { /* Inner top left */
+      top: 37.5%;
+      left: 15%;
+    }
+    &.c8n6, &.c9n6, &.c10n6 { /* Inner top right */
+      top: 37.5%;
+      left: 85%;
+    }
+    &.c8n7, &.c9n7, &.c10n7 { /* Inner bottom left */
+      top: 62.5%;
+      left: 15%;
+    }
+    &.c8n8, &.c9n8, &.c10n8 { /* Inner bottom right */
+      top: 62.5%;
+      left: 85%;
+    }
+    &.c10n9 { /* Inner center top */
+      top: 37.5%;
+      left: 50%;
+    }
+    &.c10n10 { /* Inner center bottom */
+      top: 62.5%;
+      left: 50%;
+    }
+  }
+}
+
 .textfield {
   padding: 2px;
   margin: 10px;
