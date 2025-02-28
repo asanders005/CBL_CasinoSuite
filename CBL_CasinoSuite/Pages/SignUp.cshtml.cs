@@ -18,10 +18,9 @@ public class SignUp : PageModel
 
     public string UsernameWarning { get; set; } = "";
 
-    public SignUp(IDal dal, IGameList gameList, IUser userSingleton)
+    public SignUp(IDal dal, IUser userSingleton)
     {
         _dal = dal;
-        _gameList = gameList;
         _userSingleton = userSingleton;
     }
 
@@ -34,17 +33,16 @@ public class SignUp : PageModel
     {
         if (string.IsNullOrEmpty(_dal.GetUser(NewUsername).Username))
         {
-            User newUser = new Data.Models.User(NewUsername, NewPassword, _gameList);
+            User newUser = new Data.Models.User(NewUsername, NewPassword);
             _dal.AddUser(newUser);
             _userSingleton.SetUser(newUser);
 
-            return RedirectToPage("/Index");
+            return RedirectToPage("/Account");
         }
 
         return RedirectToAction("Get", new { NewUsername = NewUsername, NewPassword = NewPassword, ConfirmPassword = ConfirmPassword, UsernameWarning = "That username is already taken" });
     }
 
     private IDal _dal;
-    private IGameList _gameList;
     private IUser _userSingleton;
 }

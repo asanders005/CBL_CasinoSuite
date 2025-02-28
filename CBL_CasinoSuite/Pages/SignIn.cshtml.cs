@@ -27,7 +27,7 @@ public class SignIn : PageModel {
         if (!string.IsNullOrEmpty(attemptedUser.Username) && Password == attemptedUser.Password)
         {
             userSingleton.SetUser(attemptedUser);
-            return RedirectToPage("/Index");
+            return RedirectToPage("/Account");
         }
 
         return RedirectToAction("Get", new { Username = Username, SignInWarning = "The Username or Password is Incorrect" });

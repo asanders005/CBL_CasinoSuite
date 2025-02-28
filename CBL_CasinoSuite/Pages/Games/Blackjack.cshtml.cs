@@ -7,7 +7,7 @@ namespace CBL_CasinoSuite.Pages.Games
 {
     public class BlackjackModel : PageModel
     {
-        public const string GAME_NAME = "Blackjack";
+        public readonly string GAME_NAME = EGameList.Blackjack.ToString();
 
         public BlackjackModel(IUser user, IDal dal)
         {
