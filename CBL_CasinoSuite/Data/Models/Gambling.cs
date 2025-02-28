@@ -11,6 +11,12 @@ namespace CBL_CasinoSuite.Data.Models
             Tied
         }
 
+        public static string NegativeBalanceToString(float bal)
+        {
+            if (bal < 0) return "-" + Math.Abs(bal).ToString("C2");
+            else return bal.ToString("C2");
+        }
+
         public static void Bet(float betAmount, ref IDal dal, string username, string gameName)
         {
             User workingUser = dal.GetUser(username);

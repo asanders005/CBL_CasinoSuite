@@ -7,7 +7,7 @@
 
 <div class="text-center board wood-border distincttext">
 	<h1 class="display-4">@Model.user.Username</h1>
-	<h2>Current Balance: @Model.user.CurrentBalance.ToString("C2")</h2>
+	<h2>Current Balance: @Gambling.NegativeBalanceToString(Model.user.CurrentBalance)</h2>
 	<form method="post" asp-page-handler="UpdateBalance">
 		<label>Add to Balance:</label>
 		<input type="number" asp-for="UpdateBalance" placeholder="Money to Add..." step="0.01" min="1" />
@@ -22,7 +22,7 @@
 			totalGains += stat.TotalWinnings - stat.TotalLosings;
 		}
 	}
-	<h3>Total Gains: @totalGains.ToString("C2")</h3>
+	<h3>Total Gains: @Gambling.NegativeBalanceToString(totalGains)</h3>
 
 	@{
 		if (Model.user.GameStatistics.Count > 0)
@@ -50,7 +50,7 @@
 					float tGains = totalStats.TotalWinnings - totalStats.TotalLosings;
 					<tr>
 					<td>@totalStats._GameName</td>
-					<td>@tGains.ToString("C2")</td>
+					<td>@Gambling.NegativeBalanceToString(tGains)</td>
 					<td>@totalStats.TotalWins</td>
 					<td>@totalStats.TotalWinnings.ToString("C2")</td>
 					<td>@totalStats.TotalLosses</td>

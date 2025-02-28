@@ -61,13 +61,13 @@ namespace CBL_CasinoSuite.Pages.Games
             switch (endState)
             {
                 case Gambling.EndState.Won:
-                    Gambling.Win(BetAmountInput, ref _dal, userSingleton.GetUser().Username, GAME_NAME, winningsModifier);
+                    Gambling.Win(BetAmount, ref _dal, userSingleton.GetUser().Username, GAME_NAME, winningsModifier);
                     break;
                 case Gambling.EndState.Lost:
                     Gambling.Lose(ref _dal, userSingleton.GetUser().Username, GAME_NAME);
                     break;
                 case Gambling.EndState.Tied:
-                    Gambling.Tie(BetAmountInput, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
+                    Gambling.Tie(BetAmount, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
                     break;
             }
         }
