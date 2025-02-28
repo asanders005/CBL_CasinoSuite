@@ -1,0 +1,40 @@
+﻿@using System.Runtime.InteropServices.JavaScript
+@using Data.Models
+@model Card
+
+<div class="card">
+    @switch (Model.Suit) {
+        case Card.CardSuit.Clubs:
+            ViewBag.suitimg = "img/club.svg";
+            break;
+        case Card.CardSuit.Spades:
+            ViewBag.suitimg = "img/spade.svg";
+            break;
+        case Card.CardSuit.Diamonds:
+            ViewBag.suitimg = "img/diamond.svg";
+            break;
+        case Card.CardSuit.Hearts:
+            ViewBag.suitimg = "img/heart.svg";
+            break;
+    }
+    @if (Model.Number > 10) {
+        <img alt="@ViewBag.suitimg.ToString()" src="@ViewBag.suitimg" class="c1n1"/>
+        switch (Model.Number) {
+            case 11:
+                <h1>J</h1>
+                break;
+            case 12:
+                <h1>Q</h1>
+                break;
+            case 13:
+                <h1>K</h1>
+                break;
+        }
+    }
+    else {
+        @for (int i = 0; i < Model.Number; i++) {
+            string classstr = "c" + @Model.Number + "n" + (i + 1);
+            <img alt="@ViewBag.suitimg.ToString()" src="@ViewBag.suitimg" class="@classstr"/>
+        }
+    }
+</div>

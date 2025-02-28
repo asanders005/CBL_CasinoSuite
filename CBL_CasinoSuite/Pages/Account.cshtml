@@ -1,4 +1,5 @@
 ﻿@page
+@using CBL_CasinoSuite.Data.Models
 @model CBL_CasinoSuite.Pages.Account
 @{
 	ViewData["Title"] = "Account";
@@ -37,10 +38,24 @@
 					<td>Losings</td>
 				</tr>
 				@{
+					GameStats totalStats = new GameStats("Total");
 					foreach (var stat in Model.user.GameStatistics)
 					{
+						totalStats.TotalWins += stat.TotalWins;
+						totalStats.TotalWinnings += stat.TotalWinnings;
+						totalStats.TotalLosses += stat.TotalLosses;
+						totalStats.TotalLosings += stat.TotalLosings;
 						<partial name="Partials/_PlayerStatPartial" model="stat" />
 					}
+					float tGains = totalStats.TotalWinnings - totalStats.TotalLosings;
+					<tr>
+					<td>@totalStats._GameName</td>
+					<td>@tGains.ToString("C2")</td>
+					<td>@totalStats.TotalWins</td>
+					<td>@totalStats.TotalWinnings.ToString("C2")</td>
+					<td>@totalStats.TotalLosses</td>
+					<td>@totalStats.TotalLosings.ToString("C2")</td>
+				</tr>
 				}
 			</table>
 		}
