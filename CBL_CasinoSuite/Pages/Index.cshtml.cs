@@ -16,12 +16,12 @@ namespace CBL_CasinoSuite.Pages
 
         public void OnGet()
         {
-            GameStats tempGame = new GameStats("Blackjack");
-            tempGame.TotalWins = 1;
-            tempGame.TotalLosses = 999;
-            tempGame.TotalWinnings = 1.01f;
+            //GameStats tempGame = new GameStats("Blackjack");
+            //tempGame.TotalWins = 1;
+            //tempGame.TotalLosses = 999;
+            //tempGame.TotalWinnings = 1.01f;
 
-            dbDal.UpdateUserStatistics("Newothan McUser", tempGame);
+            //dbDal.UpdateUserStatistics("Newothan McUser", tempGame);
             
         }
     }

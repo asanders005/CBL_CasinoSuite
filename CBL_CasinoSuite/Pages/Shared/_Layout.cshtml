@@ -1,6 +1,8 @@
-﻿@using CBL_CasinoSuite.Data.Interfaces
-@using CBL_CasinoSuite.Data.Models
-@inject IUser UserService
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var username = HttpContextAccessor.HttpContext.Session.GetString("Username");
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,8 +33,7 @@
 							<a class="nav-link text-dark" asp-area="" asp-page="/Leaderboard">Leaderboard</a>
 						</li>
 						@{
-							User user = UserService.GetUser();
-							if (string.IsNullOrEmpty(user.Username))
+							if (string.IsNullOrEmpty(username))
 							{
 								<li class="nav-item">
 									<a class="nav-link text-dark" asp-area="" asp-page="/SignIn">Sign in</a>
