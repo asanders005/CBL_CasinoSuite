@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CBL_CasinoSuite.Pages.Games
 {
-    public class BlackjackModel : PageModel
+    public class BaccaratModel : PageModel
     {
-        public readonly string GAME_NAME = EGameList.Blackjack.ToString();
+        public readonly string GAME_NAME = EGameList.Baccarat.ToString();
 
-        public BlackjackModel(IUser user, IDal dal)
+        public BaccaratModel(IUser user, IDal dal)
         {
             userSingleton = user;
             _dal = dal;
@@ -23,8 +23,9 @@ namespace CBL_CasinoSuite.Pages.Games
         public float BetAmountInput { get; set; } = 0;
 
         public static float BetAmount { get; private set; } = 0;
+        public static bool BetOnBank { get; private set; } = false;
 
-        public static List<Card> dealerCards = new List<Card>();
+        public static List<Card> bankCards = new List<Card>();
         public static List<Card> playerCards = new List<Card>();
 
         public static bool HasWinner { get; private set; }
@@ -41,12 +42,27 @@ namespace CBL_CasinoSuite.Pages.Games
             return null;
         }
 
-        public IActionResult OnPostBetMoney()
+        public IActionResult OnPostPlayer()
         {
             if (BetAmountInput > 0)
             {
                 Gambling.Bet(BetAmountInput, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
                 BetAmount = BetAmountInput;
+                BetOnBank = false;
+                Deal();
+                return RedirectToAction("Get");
+            }
+
+            return null;
+        }
+
+        public IActionResult OnPostBank()
+        {
+            if (BetAmountInput > 0)
+            {
+                Gambling.Bet(BetAmountInput, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
+                BetAmount = BetAmountInput;
+                BetOnBank = true;
                 Deal();
                 return RedirectToAction("Get");
             }
@@ -75,120 +91,77 @@ namespace CBL_CasinoSuite.Pages.Games
         public void Deal()
         {
             playerCards.Add(deck.Draw());
-            dealerCards.Add(deck.Draw());
             playerCards.Add(deck.Draw());
-        
-            Card faceDownCard = deck.Draw();
-            faceDownCard.FaceUp = false;
+            bankCards.Add(deck.Draw());
+            bankCards.Add(deck.Draw());
 
-            dealerCards.Add(faceDownCard);
+            int playerHandTotal = CalculateHandTotal(playerCards);
+            int bankHandTotal = CalculateHandTotal(bankCards);
 
-            bool dealerBlackjack = HasBlackjack(dealerCards);
-            bool playerBlackjack = HasBlackjack(playerCards);
-
-            if (dealerBlackjack && playerBlackjack) TieGame();
-            else if (!dealerBlackjack && playerBlackjack) WinGame(1.5f);
-            else if (dealerBlackjack && !playerBlackjack) LoseGame();
-        }
-
-        public IActionResult OnPostHit()
-        {
-            playerCards.Add(deck.Draw());
-            if (CalculateHandTotal(playerCards) >= 21) Stand();
-
-            return RedirectToAction("Get");
-        }
-
-        public IActionResult OnPostStand()
-        {
-            Stand();
-            return RedirectToAction("Get");
-        }
-
-        private void Stand()
-        {
-            while (CalculateHandTotal(dealerCards) < 17)
+            if (playerHandTotal > 7 && bankHandTotal > 7) TieGame();
+            else if (playerHandTotal > 7)
             {
-                dealerCards.Add(deck.Draw());
+                if (BetOnBank) LoseGame();
+                else WinGame();
             }
-
-            Update();
-        }
-
-        void Update()
-        {
-            int dealerTotal = CalculateHandTotal(dealerCards);
-            int playerTotal = CalculateHandTotal(playerCards);
-
-            if (dealerTotal <= 21 && (playerTotal > 21 || playerTotal < dealerTotal))
+            else if (bankHandTotal > 7)
             {
-                LoseGame();
-            }
-            else if (playerTotal <= 21 && (dealerTotal > 21 || dealerTotal < playerTotal))
-            {
-                WinGame();
+                if (BetOnBank) WinGame(0.95f);
+                else LoseGame();
             }
             else
             {
-                TieGame();
+                if (playerHandTotal < 6)
+                {
+                    playerCards.Add(deck.Draw());
+
+                    if (bankHandTotal < 7)
+                    {
+                        if (bankHandTotal < 3 || (bankHandTotal == 3 && playerCards[2].Number != 8)) bankCards.Add(deck.Draw());
+                        else if (playerCards[2].Number < 8 && playerCards[2].Number > 1)
+                        {
+                            if (playerCards[2].Number >= ((bankHandTotal - 3) * 2))
+                            {
+                                bankCards.Add(deck.Draw());
+                            }
+                        }
+                    }
+                }
+                else if (bankHandTotal < 6)
+                {
+                    bankCards.Add(deck.Draw());
+                }
+
+                playerHandTotal = CalculateHandTotal(playerCards);
+                bankHandTotal = CalculateHandTotal(bankCards);
+
+                if (playerHandTotal == bankHandTotal) TieGame();
+                else if (playerHandTotal > bankHandTotal)
+                {
+                    if (BetOnBank) LoseGame();
+                    else WinGame();
+                }
+                else if (bankHandTotal > playerHandTotal)
+                {
+                    if (BetOnBank) WinGame(0.95f);
+                    else LoseGame();
+                }
             }
         }
-        
-        public bool HasBlackjack(List<Card> hand)
-        {
-            if (hand.Count == 2)
-            {
-                if (hand[0].Number >= 10 && hand[1].Number == 1) // if first card is 10 or face AND second card is an ace
-                {
-                    return true;
-                }
-                else if (hand[0].Number == 1 && hand[1].Number >= 10) // if first card is an ace AND second card is 10 or face
-                {
-                    return true;
-                }
-            }
-        
-            return false;
-        }
+
         
         public int CalculateHandTotal(List<Card> hand)
         {
             int handTotal = 0;
-            int aces = 0;
             foreach (Card card in hand)
             {
-                if (card != null)
+                if (card != null && card.Number < 10)
                 {
-                    if (card.Number >= 10)
-                    {
-                        handTotal += 10;
-                    }
-                    else if (card.Number > 1)
-                    {
-                        handTotal += card.Number;
-                    }
-                    else if (card.Number == 1)
-                    {
-                        aces++;
-                    }
+                    handTotal += card.Number;
                 }
-            }
-
-            for (int i = 0; i < aces; i++)
-            {
-                if (handTotal + (aces - 1) + 11 <= 21)
-                {
-                    handTotal += 11;
-                }
-                else
-                {
-                    handTotal++;
-                }
-
-                aces--;
             }
         
-            return handTotal;
+            return handTotal % 10;
         }
 
         public void WinGame(float winMod = 1.0f)
@@ -212,7 +185,7 @@ namespace CBL_CasinoSuite.Pages.Games
         public IActionResult OnPostPlayAgain()
         {
             playerCards.Clear();
-            dealerCards.Clear();
+            bankCards.Clear();
             HasWinner = false;
             BetAmount = 0;
             BetAmountInput = 0;
