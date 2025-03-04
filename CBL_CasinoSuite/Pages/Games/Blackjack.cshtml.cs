@@ -9,14 +9,12 @@ namespace CBL_CasinoSuite.Pages.Games
     {
         public readonly string GAME_NAME = EGameList.Blackjack.ToString();
 
-        public BlackjackModel(IUser user, IDal dal)
+        public BlackjackModel(IDal dal)
         {
-            userSingleton = user;
             _dal = dal;
         }
 
         private IDal _dal;
-        private IUser userSingleton;
         Deck deck = new Deck();
 
         [BindProperty]
@@ -33,7 +31,7 @@ namespace CBL_CasinoSuite.Pages.Games
 
         public IActionResult OnGet()
         {
-            if (string.IsNullOrEmpty(userSingleton.GetUser().Username))
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
             {
                 return RedirectToPage("/SignIn");
             }
@@ -45,7 +43,7 @@ namespace CBL_CasinoSuite.Pages.Games
         {
             if (BetAmountInput > 0)
             {
-                Gambling.Bet(BetAmountInput, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
+                Gambling.Bet(BetAmountInput, ref _dal, HttpContext.Session.GetString("Username"), GAME_NAME);
                 BetAmount = BetAmountInput;
                 Deal();
                 return RedirectToAction("Get");
@@ -61,13 +59,13 @@ namespace CBL_CasinoSuite.Pages.Games
             switch (endState)
             {
                 case Gambling.EndState.Won:
-                    Gambling.Win(BetAmount, ref _dal, userSingleton.GetUser().Username, GAME_NAME, winningsModifier);
+                    Gambling.Win(BetAmount, ref _dal, HttpContext.Session.GetString("Username"), GAME_NAME, winningsModifier);
                     break;
                 case Gambling.EndState.Lost:
-                    Gambling.Lose(ref _dal, userSingleton.GetUser().Username, GAME_NAME);
+                    Gambling.Lose(ref _dal, HttpContext.Session.GetString("Username"), GAME_NAME);
                     break;
                 case Gambling.EndState.Tied:
-                    Gambling.Tie(BetAmount, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
+                    Gambling.Tie(BetAmount, ref _dal, HttpContext.Session.GetString("Username"), GAME_NAME);
                     break;
             }
         }

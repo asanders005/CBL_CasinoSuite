@@ -18,10 +18,9 @@ public class Leaderboard : PageModel {
     public string Filter { get; set; } = "None";
     public EGameList LbFilter { get; private set; } = EGameList.None;
 
-    public Leaderboard(IDal dal, IUser user)
+    public Leaderboard(IDal dal)
     {
         _dal = dal;
-        _userSingleton = user;
     }
 
     public void OnGet()
@@ -61,7 +60,11 @@ public class Leaderboard : PageModel {
         {
             Users = _dal.GetUsers().OrderByDescending(u => u.GameStatistics.Sum(stat => stat.TotalWinnings - stat.TotalLosings)).ToList();
         }
-        CurrentUser = _userSingleton.GetUser();
+        string? currentUsername = HttpContext.Session.GetString("Username");
+        if (!string.IsNullOrEmpty(currentUsername))
+        {
+            CurrentUser = _dal.GetUser(currentUsername);
+        }
 
         int maxPage = ((Users.Count - 1) / 10) + 1;
         PageNum = (PageNum < 1) ? 1 : (PageNum > maxPage) ? maxPage : PageNum;
@@ -78,5 +81,4 @@ public class Leaderboard : PageModel {
     }
 
     private IDal _dal;
-    private IUser _userSingleton;
 }
