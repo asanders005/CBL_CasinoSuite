@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CBL_CasinoSuite", "CBL_CasinoSuite\CBL_CasinoSuite.csproj", "{D6143DE2-FDB7-4EBE-B6BA-6A1DADB3216E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CBL_CasinoSuite", "CBL_CasinoSuite\CBL_CasinoSuite.csproj", "{D6143DE2-FDB7-4EBE-B6BA-6A1DADB3216E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

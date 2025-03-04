@@ -6,7 +6,7 @@
 	@{
 		float totalChange = Model.TotalWinnings - Model.TotalLosings;
 	}
-	<td>@totalChange.ToString("C2")</td>
+	<td>@Gambling.NegativeBalanceToString(totalChange)</td>
 	<td>@Model.TotalWins</td>
 	<td>@Model.TotalWinnings.ToString("C2")</td>
 	<td>@Model.TotalLosses</td>

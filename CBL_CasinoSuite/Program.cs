@@ -6,7 +6,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddTransient<IGameList, GameList>();
 builder.Services.AddTransient<IDal, Dal>();
 builder.Services.AddSingleton<IUser, UserSingleton>();
 

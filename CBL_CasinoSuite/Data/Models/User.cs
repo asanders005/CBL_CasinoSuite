@@ -44,16 +44,11 @@ namespace CBL_CasinoSuite.Data.Models
             Username = "";
         }
 
-        public User(string username, string pass, IGameList gameList)
+        public User(string username, string pass)
         {
             Username = username;
             Password = pass;
             CurrentBalance = 500f;
-
-            foreach (var game in gameList.GetGameList())
-            {
-                GameStatistics.Add(new GameStats(game));
-            }
         }
     }
 }

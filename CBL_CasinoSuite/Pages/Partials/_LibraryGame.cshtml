@@ -1,5 +1,13 @@
-﻿
+﻿@using Data.Models
+@model LibraryGameModel
 
 <div class="wood-border board distincttext">
-    <h1>Game</h1>
+	@* Flex Layout*@
+	@*
+		Left Side:
+		<img class="wood-border" src="Whatever the game image src is" *Add whatever else to make it look nice* />
+	*@
+    <h1>@Model.GameName</h1>
+	<p>@Model.Description</p>
+	<a class="wood blacklink lightpadding" asp-page="@Model.PageName">Play Now</a>
 </div>
