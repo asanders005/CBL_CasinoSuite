@@ -18,6 +18,8 @@ public class SignUp : PageModel
 
     public string UsernameWarning { get; set; } = "";
 
+    public string PageRedirect { get; set; }
+
     public SignUp(IDal dal)
     {
         _dal = dal;
@@ -37,10 +39,11 @@ public class SignUp : PageModel
             HttpContext.Session.SetString("Username", newUser.Username);
             //_userSingleton.SetUser(newUser);
 
-            return RedirectToPage("/Account");
+            if (string.IsNullOrEmpty(PageRedirect)) return RedirectToPage("/Account");
+            else return RedirectToPage(PageRedirect);
         }
 
-        return RedirectToAction("Get", new { NewUsername = NewUsername, NewPassword = NewPassword, ConfirmPassword = ConfirmPassword, UsernameWarning = "That username is already taken" });
+        return RedirectToAction("Get", new { NewUsername = NewUsername, NewPassword = NewPassword, ConfirmPassword = ConfirmPassword, UsernameWarning = "That username is already taken", PageRedirect = PageRedirect });
     }
 
     private IDal _dal;

@@ -40,7 +40,7 @@ namespace CBL_CasinoSuite.Pages.Games
         {
             if (string.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
             {
-                return RedirectToPage("/SignIn");
+                return RedirectToPage("/SignIn", new { PageRedirect = "/Games/Baccarat" });
             }
 
             user = _dal.GetUser(HttpContext.Session.GetString("Username"));

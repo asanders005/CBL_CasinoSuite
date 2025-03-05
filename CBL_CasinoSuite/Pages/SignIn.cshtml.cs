@@ -11,6 +11,8 @@ public class SignIn : PageModel {
     public string Password { get; set; } = "";
     public string SignInWarning { get; set; } = "";
 
+    public string PageRedirect { get; set; }
+
     public SignIn(IDal dal)
     {
         _dal = dal;
@@ -26,10 +28,11 @@ public class SignIn : PageModel {
         if (!string.IsNullOrEmpty(attemptedUser.Username) && Password == attemptedUser.Password)
         {
             HttpContext.Session.SetString("Username", attemptedUser.Username);
-            return RedirectToPage("/Account");
+            if (string.IsNullOrEmpty(PageRedirect)) return RedirectToPage("/Account");
+            else return RedirectToPage(PageRedirect);
         }
 
-        return RedirectToAction("Get", new { Username = Username, SignInWarning = "The Username or Password is Incorrect" });
+        return RedirectToAction("Get", new { Username = Username, SignInWarning = "The Username or Password is Incorrect", PageRedirect = PageRedirect });
     }
 
     private IDal _dal;
