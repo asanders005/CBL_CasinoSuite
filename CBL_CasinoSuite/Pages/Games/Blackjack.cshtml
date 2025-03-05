@@ -5,7 +5,7 @@
 }
 
 @{
-    if (BlackjackModel.BetAmount <= 0) /* MAKE SURE THIS IS <= 0!!! */
+    if (Model.BetAmount <= 0) /* MAKE SURE THIS IS <= 0!!! */
     {
         <div class="text-center board wood-border distincttext">
             <h1 class="display-4">@ViewData["Title"]</h1>
@@ -19,27 +19,27 @@
     else
     {
         <div class="text-center board wood-border distincttext">
-            <h1>Blackjack - Bet: @BlackjackModel.BetAmount</h1>
+            <h1>Blackjack - Bet: @Model.BetAmount</h1>
        
             <h2>Player:</h2>
-            <h5>Total: @Model.CalculateHandTotal(BlackjackModel.playerCards)</h5>
+            <h5>Total: @Model.CalculateHandTotal(Model.PlayerCards)</h5>
             <div class="cardcont">
-                @foreach (Data.Models.Card card in BlackjackModel.playerCards)
+                @foreach (Data.Models.Card card in Model.PlayerCards)
                 {
                     <partial name="Partials/_CardPartial" model=card/>
                 }
             </div>
 
             <h2>Dealer:</h2>
-            <h5>Total: @Model.CalculateHandTotal(BlackjackModel.dealerCards)</h5>
+            <h5>Total: @Model.CalculateHandTotal(Model.DealerCards)</h5>
             <div class="cardcont">
-                @foreach (Data.Models.Card card in BlackjackModel.dealerCards)
+                @foreach (Data.Models.Card card in Model.DealerCards)
                 {
                     <partial name="Partials/_CardPartial" model=card/>
                 }
             </div>
 
-            @if (BlackjackModel.HasWinner == false)
+            @if (Model.Winner == Data.Models.Gambling.EndState.Unset)
             {
                 <form asp-page-handler="Hit" method="post">
                     <button class="wood buttonfield">Hit</button>
@@ -50,7 +50,7 @@
             }
             else
             {
-                <h1>Winner: @BlackjackModel.winner</h1>
+                <h1>Winner: @Model.Winner</h1>
                 <form asp-page-handler="PlayAgain" method="post">
                     <button class="wood buttonfield">Play Again</button>
                 </form>
