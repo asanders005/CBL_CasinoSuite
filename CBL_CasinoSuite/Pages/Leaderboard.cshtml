@@ -13,6 +13,7 @@
 			<select asp-for="@Model.Filter" onchange="this.form.submit()">
 				<option value="@EGameList.None.ToString()">Top (Total Balance)</option>
 				<option value="@EGameList.Blackjack.ToString()">Top (Blackjack)</option>
+				<option value="@EGameList.Baccarat.ToString()">Top (Baccarat)</option>
 			</select>
 		</form>
 	</div>
@@ -31,9 +32,6 @@
 			int userCount = Model.Users.Count;
 			int entryCount = (userCount >= 10) ? (userCount / 10 >= Model.PageNum) ? 10 : userCount % 10 : userCount;
 
-			// Functionality to show current user's position will be added later (hopefully)
-			// if (!string.IsNullOrEmpty(Model.CurrentUser.Username)) entryCount++;
-
 			List<User> displayedUsers = new List<User>();
 
 			for (int i = 0; i < entryCount; i++)
@@ -46,7 +44,7 @@
 
 				<partial name="Partials/_LeaderboardPartial" model="Model.Users[currentUser]" />
 			}
-			if (!string.IsNullOrEmpty(Model.CurrentUser.Username) && displayedUsers.Find(u => u.Username == Model.CurrentUser.Username) == null)
+			if (Model.CurrentUser != null && displayedUsers.Find(u => u.Username == Model.CurrentUser.Username) == null)
 			{
 				User? currentUser = Model.Users.Find(u => u.Username == Model.CurrentUser.Username);
 				int userLocation = Model.Users.IndexOf(currentUser);
