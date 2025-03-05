@@ -8,7 +8,8 @@ namespace CBL_CasinoSuite.Data.Models
         {
             Won,
             Lost,
-            Tied
+            Tied,
+            Unset
         }
 
         public static string NegativeBalanceToString(float bal)
@@ -49,7 +50,7 @@ namespace CBL_CasinoSuite.Data.Models
         {
             User workingUser = dal.GetUser(username);
 
-            GameStats tempStats = workingUser.GameStatistics.First(g => g._GameName == gameName);
+            GameStats tempStats = workingUser.GameStatistics.FirstOrDefault(g => g._GameName == gameName);
             if (tempStats == null) tempStats = new GameStats(gameName);
 
             tempStats.TotalLosses += 1;
@@ -61,7 +62,7 @@ namespace CBL_CasinoSuite.Data.Models
         {
             User workingUser = dal.GetUser(username);
 
-            GameStats tempStats = workingUser.GameStatistics.First(g => g._GameName == gameName);
+            GameStats tempStats = workingUser.GameStatistics.FirstOrDefault(g => g._GameName == gameName);
             if (tempStats == null) tempStats = new GameStats(gameName);
 
             tempStats.TotalLosings -= betAmount;

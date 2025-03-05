@@ -4,7 +4,7 @@
 }
 
 @{
-    if (BaccaratModel.BetAmount == 0)
+    if (Model.BetAmount == 0)
     {
         <div class="text-center">
             <h1 class="display-4">@ViewData["Title"]</h1>
@@ -22,21 +22,21 @@
     }
     else
     {
-        <h1>bac rat: @BaccaratModel.BetAmount</h1>
+        <h1>bac rat: @Model.BetAmount</h1>
 
         <h2>Player's cards:</h2>
-        foreach (Data.Models.Card card in BaccaratModel.playerCards)
+        foreach (Data.Models.Card card in Model.PlayerCards)
         {
             <p>@card.ToString()</p>
         }
 
         <h2>Bank's cards:</h2>
-        foreach (Data.Models.Card card in BaccaratModel.bankCards)
+        foreach (Data.Models.Card card in Model.BankCards)
         {
             <p>@card.ToString()</p>
         }
 
-        if (BaccaratModel.HasWinner == false)
+        if (Model.Winner == Data.Models.Gambling.EndState.Unset)
         {
             <form asp-page-handler="Hit" method="post">
                 <button>Hit</button>
@@ -54,8 +54,8 @@
 
     }
 
-    <p>Player: @Model.CalculateHandTotal(BaccaratModel.playerCards)</p>
-    <p>Dealer: @Model.CalculateHandTotal(BaccaratModel.bankCards)</p>
-    <p>Winner: @BaccaratModel.winner</p>
+    <p>Player: @Model.CalculateHandTotal(Model.PlayerCards)</p>
+    <p>Dealer: @Model.CalculateHandTotal(Model.BankCards)</p>
+    <p>Winner: @Model.Winner.ToString()</p>
 }
 

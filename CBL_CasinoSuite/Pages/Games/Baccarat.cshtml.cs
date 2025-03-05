@@ -1,7 +1,10 @@
 using CBL_CasinoSuite.Data.Interfaces;
 using CBL_CasinoSuite.Data.Models;
+using CBL_CasinoSuite.Data.Extensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Net.Http;
 
 namespace CBL_CasinoSuite.Pages.Games
 {
@@ -9,47 +12,77 @@ namespace CBL_CasinoSuite.Pages.Games
     {
         public readonly string GAME_NAME = EGameList.Baccarat.ToString();
 
-        public BaccaratModel(IUser user, IDal dal)
+        public BaccaratModel(IDal dal)
         {
-            userSingleton = user;
             _dal = dal;
         }
 
         private IDal _dal;
-        private IUser userSingleton;
+        private User user;
+
         Deck deck = new Deck();
 
         [BindProperty]
         public float BetAmountInput { get; set; } = 0;
 
-        public static float BetAmount { get; private set; } = 0;
-        public static bool BetOnBank { get; private set; } = false;
+        public float BetAmount { get; private set; }
 
-        public static List<Card> bankCards = new List<Card>();
-        public static List<Card> playerCards = new List<Card>();
+        public bool BetOnBank { get; private set; }
 
-        public static bool HasWinner { get; private set; }
+        public List<Card> BankCards { get; private set; } = new List<Card>();
 
-        public static string winner = "none";
+        public List<Card> PlayerCards { get; private set; } = new List<Card>();
+
+        public Gambling.EndState Winner { get; private set; } = Gambling.EndState.Unset;
+        private bool initialized = false;
 
         public IActionResult OnGet()
         {
-            if (string.IsNullOrEmpty(userSingleton.GetUser().Username))
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
             {
                 return RedirectToPage("/SignIn");
             }
+
+            user = _dal.GetUser(HttpContext.Session.GetString("Username"));
+
+            initialized = HttpContext.Session.Get<bool>($"{GAME_NAME}_Initialized");
+            if (initialized)
+            {
+                BetAmount = HttpContext.Session.Get<float>($"{GAME_NAME}_BetAmount");
+                BetOnBank = HttpContext.Session.Get<bool>($"{GAME_NAME}_BetOnBank");
+                BankCards = HttpContext.Session.Get<List<Card>>($"{GAME_NAME}_BankCards");
+                PlayerCards = HttpContext.Session.Get<List<Card>>($"{GAME_NAME}_PlayerCards");
+                Winner = HttpContext.Session.Get<Gambling.EndState>($"{GAME_NAME}_Winner");
+            }
+            else
+            {
+                HttpContext.Session.Set<List<Card>>($"{GAME_NAME}_PlayerCards", PlayerCards);
+                HttpContext.Session.Set<List<Card>>($"{GAME_NAME}_BankCards", BankCards);
+                HttpContext.Session.Set<Gambling.EndState>($"{GAME_NAME}_Winner", Winner);
+                HttpContext.Session.Set<float>($"{GAME_NAME}_BetAmount", BetAmount);
+                HttpContext.Session.Set<bool>($"{GAME_NAME}_BetOnBank", BetOnBank);
+                initialized = true;
+            }
+            HttpContext.Session.Set<bool>($"{GAME_NAME}_Initialized", initialized);
+
 
             return null;
         }
 
         public IActionResult OnPostPlayer()
         {
+            user = _dal.GetUser(HttpContext.Session.GetString("Username"));
+
             if (BetAmountInput > 0)
             {
-                Gambling.Bet(BetAmountInput, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
+                Gambling.Bet(BetAmountInput, ref _dal, user.Username, GAME_NAME);
                 BetAmount = BetAmountInput;
+                HttpContext.Session.Set<float>($"{GAME_NAME}_BetAmount", BetAmountInput);
                 BetOnBank = false;
+                HttpContext.Session.Set<bool>($"{GAME_NAME}_BetOnBank", false);
                 Deal();
+                HttpContext.Session.Set<List<Card>>($"{GAME_NAME}_BankCards", BankCards);
+                HttpContext.Session.Set<List<Card>>($"{GAME_NAME}_PlayerCards", PlayerCards);
                 return RedirectToAction("Get");
             }
 
@@ -58,12 +91,18 @@ namespace CBL_CasinoSuite.Pages.Games
 
         public IActionResult OnPostBank()
         {
+            user = _dal.GetUser(HttpContext.Session.GetString("Username"));
+
             if (BetAmountInput > 0)
             {
-                Gambling.Bet(BetAmountInput, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
+                Gambling.Bet(BetAmountInput, ref _dal, user.Username, GAME_NAME);
                 BetAmount = BetAmountInput;
+                HttpContext.Session.Set<float>($"{GAME_NAME}_BetAmount", BetAmount);
                 BetOnBank = true;
+                HttpContext.Session.Set<bool>($"{GAME_NAME}_BetOnBank", true);
                 Deal();
+                HttpContext.Session.Set<List<Card>>($"{GAME_NAME}_BankCards", BankCards);
+                HttpContext.Session.Set<List<Card>>($"{GAME_NAME}_PlayerCards", PlayerCards);
                 return RedirectToAction("Get");
             }
 
@@ -72,31 +111,31 @@ namespace CBL_CasinoSuite.Pages.Games
 
         private void EndGame(Gambling.EndState endState, float winningsModifier = 1.0f)
         {
-            HasWinner = true;
-
+            Winner = endState;
+            HttpContext.Session.Set<Gambling.EndState>($"{GAME_NAME}_Winner", Winner);
             switch (endState)
             {
                 case Gambling.EndState.Won:
-                    Gambling.Win(BetAmount, ref _dal, userSingleton.GetUser().Username, GAME_NAME, winningsModifier);
+                    Gambling.Win(BetAmount, ref _dal, user.Username, GAME_NAME, winningsModifier);
                     break;
                 case Gambling.EndState.Lost:
-                    Gambling.Lose(ref _dal, userSingleton.GetUser().Username, GAME_NAME);
+                    Gambling.Lose(ref _dal, user.Username, GAME_NAME);
                     break;
                 case Gambling.EndState.Tied:
-                    Gambling.Tie(BetAmount, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
+                    Gambling.Tie(BetAmount, ref _dal, user.Username, GAME_NAME);
                     break;
             }
         }
 
         public void Deal()
         {
-            playerCards.Add(deck.Draw());
-            playerCards.Add(deck.Draw());
-            bankCards.Add(deck.Draw());
-            bankCards.Add(deck.Draw());
+            PlayerCards.Add(deck.Draw());
+            PlayerCards.Add(deck.Draw());
+            BankCards.Add(deck.Draw());
+            BankCards.Add(deck.Draw());
 
-            int playerHandTotal = CalculateHandTotal(playerCards);
-            int bankHandTotal = CalculateHandTotal(bankCards);
+            int playerHandTotal = CalculateHandTotal(PlayerCards);
+            int bankHandTotal = CalculateHandTotal(BankCards);
 
             if (playerHandTotal > 7 && bankHandTotal > 7) TieGame();
             else if (playerHandTotal > 7)
@@ -113,27 +152,27 @@ namespace CBL_CasinoSuite.Pages.Games
             {
                 if (playerHandTotal < 6)
                 {
-                    playerCards.Add(deck.Draw());
+                    PlayerCards.Add(deck.Draw());
 
                     if (bankHandTotal < 7)
                     {
-                        if (bankHandTotal < 3 || (bankHandTotal == 3 && playerCards[2].Number != 8)) bankCards.Add(deck.Draw());
-                        else if (playerCards[2].Number < 8 && playerCards[2].Number > 1)
+                        if (bankHandTotal < 3 || (bankHandTotal == 3 && PlayerCards[2].Number != 8)) BankCards.Add(deck.Draw());
+                        else if (PlayerCards[2].Number < 8 && PlayerCards[2].Number > 1)
                         {
-                            if (playerCards[2].Number >= ((bankHandTotal - 3) * 2))
+                            if (PlayerCards[2].Number >= ((bankHandTotal - 3) * 2))
                             {
-                                bankCards.Add(deck.Draw());
+                                BankCards.Add(deck.Draw());
                             }
                         }
                     }
                 }
                 else if (bankHandTotal < 6)
                 {
-                    bankCards.Add(deck.Draw());
+                    BankCards.Add(deck.Draw());
                 }
 
-                playerHandTotal = CalculateHandTotal(playerCards);
-                bankHandTotal = CalculateHandTotal(bankCards);
+                playerHandTotal = CalculateHandTotal(PlayerCards);
+                bankHandTotal = CalculateHandTotal(BankCards);
 
                 if (playerHandTotal == bankHandTotal) TieGame();
                 else if (playerHandTotal > bankHandTotal)
@@ -152,6 +191,7 @@ namespace CBL_CasinoSuite.Pages.Games
         
         public int CalculateHandTotal(List<Card> hand)
         {
+            if (hand == null) return 0; 
             int handTotal = 0;
             foreach (Card card in hand)
             {
@@ -166,28 +206,29 @@ namespace CBL_CasinoSuite.Pages.Games
 
         public void WinGame(float winMod = 1.0f)
         {
-            winner = "player";
             EndGame(Gambling.EndState.Won, winMod);
         }
 
         public void LoseGame()
         {
-            winner = "house";
             EndGame(Gambling.EndState.Lost);
         }
 
         public void TieGame()
         {
-            winner = "tie";
             EndGame(Gambling.EndState.Tied);
         }
 
         public IActionResult OnPostPlayAgain()
         {
-            playerCards.Clear();
-            bankCards.Clear();
-            HasWinner = false;
+            PlayerCards.Clear();
+            HttpContext.Session.Set<List<Card>>($"{GAME_NAME}_PlayerCards", PlayerCards);
+            BankCards.Clear();
+            HttpContext.Session.Set<List<Card>>($"{GAME_NAME}_BankCards", BankCards);
+            Winner = Gambling.EndState.Unset;
+            HttpContext.Session.Set<Gambling.EndState>($"{GAME_NAME}_Winner", Winner);
             BetAmount = 0;
+            HttpContext.Session.Set<float>($"{GAME_NAME}_BetAmount", BetAmount);
             BetAmountInput = 0;
 
             return RedirectToAction("Get");
