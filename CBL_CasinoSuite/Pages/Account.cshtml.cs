@@ -41,7 +41,7 @@ public class Account : PageModel {
 
     public IActionResult OnPostSignOut()
     {
-        HttpContext.Session.SetString("Username", null);
+        HttpContext.Session.SetString("Username", "");
 
         return RedirectToPage("/SignIn");
     }
