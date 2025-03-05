@@ -74,15 +74,51 @@ body {
   background: darkslategray;
 }
 
+@keyframes placecard {
+  from {
+    transform: translateY(-100px) rotate(-15deg);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes flipcard {
+  from {
+    transform: rotateY(-180deg);
+  }
+  to {
+    transform: rotateY(0);
+  }
+}
+
 div.card {
   display: flex;
   padding: 1em;
+  margin: 0.25em;
   flex-direction: row;
   background-color: white;
   border: 2px solid black;
   border-radius: 0.75em;
   width: 10em;
   height: 14em;
+  &.anim-place {
+    animation: placecard 0.5s 1 ease;
+  }
+  &.anim-flip {
+    animation: flipcard 0.5s 1 linear;
+  }
+  &.flipped {
+    background-image: url(../img/diamond.svg);
+    background-size: 0.5em;
+    background-position: center;
+    img {
+      position: relative;
+      margin: auto;
+      width: 70%;
+      height: 35%;
+    }
+  }
   h1 {
     font-size: 4em;
     color: white;
@@ -168,6 +204,13 @@ div.card {
   }
 }
 
+.cardcont {
+  display: flex;
+  margin: auto;
+  width: 42em;
+  flex-wrap: wrap;
+}
+
 .textfield {
   padding: 2px;
   margin: 10px;
@@ -197,4 +240,16 @@ div.card {
     max-height: 50px;
     object-fit: contain;
     margin: 3px;
+}
+
+.gameimage {
+    max-width: 40%;
+    object-fit: contain;
+    padding: 0px;
+    margin: 5px;
+}
+
+.flex-container {
+    display: flex;
+    justify-content: space-between;
 }
