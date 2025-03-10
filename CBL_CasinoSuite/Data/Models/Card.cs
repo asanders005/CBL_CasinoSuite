@@ -11,13 +11,6 @@ public class Card {
         Number = number;
     }
 
-    [SetsRequiredMembers]
-    public Card(Card card)
-    {
-        Suit = card.Suit;
-        Number = card.Number;
-    }
-
     public bool FaceUp { get; set; } = false;
     
     public enum CardSuit {

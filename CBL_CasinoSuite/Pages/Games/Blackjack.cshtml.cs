@@ -1,3 +1,4 @@
+using CBL_CasinoSuite.Data.Extensions;
 using CBL_CasinoSuite.Data.Interfaces;
 using CBL_CasinoSuite.Data.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -9,45 +10,69 @@ namespace CBL_CasinoSuite.Pages.Games
     {
         public readonly string GAME_NAME = EGameList.Blackjack.ToString();
 
-        public BlackjackModel(IUser user, IDal dal)
+        public BlackjackModel(IDal dal)
         {
-            userSingleton = user;
             _dal = dal;
         }
 
         private IDal _dal;
-        private IUser userSingleton;
+        private User user;
+
         Deck deck = new Deck();
 
         [BindProperty]
         public float BetAmountInput { get; set; } = 0;
 
-        public static float BetAmount { get; private set; } = 0;
+        public float BetAmount { get; private set; } = 0;
 
-        public static List<Card> dealerCards = new List<Card>();
-        public static List<Card> playerCards = new List<Card>();
+        public List<Card> DealerCards { get; private set; } = new List<Card>();
+        public List<Card> PlayerCards { get; private set; } = new List<Card>();
 
-        public static bool HasWinner { get; private set; }
-
-        public static string winner = "none";
+        public Gambling.EndState Winner { get; private set; } = Gambling.EndState.Unset;
+        private bool initialized = false;
 
         public IActionResult OnGet()
         {
-            if (string.IsNullOrEmpty(userSingleton.GetUser().Username))
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
             {
-                return RedirectToPage("/SignIn");
+                return RedirectToPage("/SignIn", new { PageRedirect = "/Games/Blackjack" });
             }
+
+            user = _dal.GetUser(HttpContext.Session.GetString("Username"));
+
+            initialized = HttpContext.Session.Get<bool>($"{GAME_NAME}_Initialized");
+            if (initialized)
+            {
+                BetAmount = HttpContext.Session.Get<float>($"{GAME_NAME}_BetAmount");
+                DealerCards = HttpContext.Session.Get<List<Card>>($"{GAME_NAME}_DealerCards");
+                PlayerCards = HttpContext.Session.Get<List<Card>>($"{GAME_NAME}_PlayerCards");
+                Winner = HttpContext.Session.Get<Gambling.EndState>($"{GAME_NAME}_Winner");
+            }
+            else
+            {
+                HttpContext.Session.Set<List<Card>>($"{GAME_NAME}_PlayerCards", PlayerCards);
+                HttpContext.Session.Set<List<Card>>($"{GAME_NAME}_DealerCards", DealerCards);
+                HttpContext.Session.Set<Gambling.EndState>($"{GAME_NAME}_Winner", Winner);
+                HttpContext.Session.Set<float>($"{GAME_NAME}_BetAmount", BetAmount);
+                initialized = true;
+            }
+            HttpContext.Session.Set<bool>($"{GAME_NAME}_Initialized", initialized);
 
             return null;
         }
 
         public IActionResult OnPostBetMoney()
         {
-            if (BetAmountInput != 0)
+            user = _dal.GetUser(HttpContext.Session.GetString("Username"));
+
+            if (BetAmountInput > 0)
             {
-                Gambling.Bet(BetAmountInput, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
+                Gambling.Bet(BetAmountInput, ref _dal, user.Username, GAME_NAME);
                 BetAmount = BetAmountInput;
+                HttpContext.Session.Set<float>($"{GAME_NAME}_BetAmount", BetAmount);
                 Deal();
+                HttpContext.Session.Set<List<Card>>($"{GAME_NAME}_DealerCards", DealerCards);
+                HttpContext.Session.Set<List<Card>>($"{GAME_NAME}_PlayerCards", PlayerCards);
                 return RedirectToAction("Get");
             }
 
@@ -56,35 +81,40 @@ namespace CBL_CasinoSuite.Pages.Games
 
         private void EndGame(Gambling.EndState endState, float winningsModifier = 1.0f)
         {
-            HasWinner = true;
-
+            Winner = endState;
+            HttpContext.Session.Set<Gambling.EndState>($"{GAME_NAME}_Winner", Winner);
+            user = _dal.GetUser(HttpContext.Session.GetString("Username"));
+            BetAmount = HttpContext.Session.Get<float>($"{GAME_NAME}_BetAmount");
+            
             switch (endState)
             {
                 case Gambling.EndState.Won:
-                    Gambling.Win(BetAmount, ref _dal, userSingleton.GetUser().Username, GAME_NAME, winningsModifier);
+                    Console.WriteLine($"Won {GAME_NAME}! username: {user.Username}, bet: {BetAmount}");
+                    Gambling.Win(BetAmount, ref _dal, user.Username, GAME_NAME, winningsModifier);
                     break;
                 case Gambling.EndState.Lost:
-                    Gambling.Lose(ref _dal, userSingleton.GetUser().Username, GAME_NAME);
+                    Console.WriteLine($"Lost {GAME_NAME}! username: {user.Username}, bet: {BetAmount}");
+                    Gambling.Lose(ref _dal, user.Username, GAME_NAME);
                     break;
                 case Gambling.EndState.Tied:
-                    Gambling.Tie(BetAmount, ref _dal, userSingleton.GetUser().Username, GAME_NAME);
+                    Gambling.Tie(BetAmount, ref _dal, user.Username, GAME_NAME);
                     break;
             }
         }
 
         public void Deal()
         {
-            playerCards.Add(deck.Draw());
-            dealerCards.Add(deck.Draw());
-            playerCards.Add(deck.Draw());
+            PlayerCards.Add(deck.Draw());
+            DealerCards.Add(deck.Draw());
+            PlayerCards.Add(deck.Draw());
         
             Card faceDownCard = deck.Draw();
             faceDownCard.FaceUp = false;
 
-            dealerCards.Add(faceDownCard);
+            DealerCards.Add(faceDownCard);
 
-            bool dealerBlackjack = HasBlackjack(dealerCards);
-            bool playerBlackjack = HasBlackjack(playerCards);
+            bool dealerBlackjack = HasBlackjack(DealerCards);
+            bool playerBlackjack = HasBlackjack(PlayerCards);
 
             if (dealerBlackjack && playerBlackjack) TieGame();
             else if (!dealerBlackjack && playerBlackjack) WinGame(1.5f);
@@ -93,23 +123,36 @@ namespace CBL_CasinoSuite.Pages.Games
 
         public IActionResult OnPostHit()
         {
-            playerCards.Add(deck.Draw());
-            if (CalculateHandTotal(playerCards) >= 21) Stand();
+            user = _dal.GetUser(HttpContext.Session.GetString("Username"));
+            DealerCards = HttpContext.Session.Get<List<Card>>($"{GAME_NAME}_DealerCards");
+            PlayerCards = HttpContext.Session.Get<List<Card>>($"{GAME_NAME}_PlayerCards");
+
+            PlayerCards.Add(deck.Draw());
+
+            if (CalculateHandTotal(PlayerCards) >= 21) Stand();
+            HttpContext.Session.Set<List<Card>>($"{GAME_NAME}_DealerCards", DealerCards);
+            HttpContext.Session.Set<List<Card>>($"{GAME_NAME}_PlayerCards", PlayerCards);
 
             return RedirectToAction("Get");
         }
 
         public IActionResult OnPostStand()
         {
+            user = _dal.GetUser(HttpContext.Session.GetString("Username"));
+            DealerCards = HttpContext.Session.Get<List<Card>>($"{GAME_NAME}_DealerCards");
+            PlayerCards = HttpContext.Session.Get<List<Card>>($"{GAME_NAME}_PlayerCards");
+
             Stand();
+            HttpContext.Session.Set<List<Card>>($"{GAME_NAME}_DealerCards", DealerCards);
+
             return RedirectToAction("Get");
         }
 
         private void Stand()
         {
-            while (CalculateHandTotal(dealerCards) < 17)
+            while (CalculateHandTotal(DealerCards) < 17)
             {
-                dealerCards.Add(deck.Draw());
+                DealerCards.Add(deck.Draw());
             }
 
             Update();
@@ -117,8 +160,8 @@ namespace CBL_CasinoSuite.Pages.Games
 
         void Update()
         {
-            int dealerTotal = CalculateHandTotal(dealerCards);
-            int playerTotal = CalculateHandTotal(playerCards);
+            int dealerTotal = CalculateHandTotal(DealerCards);
+            int playerTotal = CalculateHandTotal(PlayerCards);
 
             if (dealerTotal <= 21 && (playerTotal > 21 || playerTotal < dealerTotal))
             {
@@ -193,28 +236,29 @@ namespace CBL_CasinoSuite.Pages.Games
 
         public void WinGame(float winMod = 1.0f)
         {
-            winner = "player";
             EndGame(Gambling.EndState.Won, winMod);
         }
 
         public void LoseGame()
         {
-            winner = "house";
             EndGame(Gambling.EndState.Lost);
         }
 
         public void TieGame()
         {
-            winner = "tie";
             EndGame(Gambling.EndState.Tied);
         }
 
         public IActionResult OnPostPlayAgain()
         {
-            playerCards.Clear();
-            dealerCards.Clear();
-            HasWinner = false;
+            PlayerCards.Clear();
+            HttpContext.Session.Set<List<Card>>($"{GAME_NAME}_PlayerCards", PlayerCards);
+            DealerCards.Clear();
+            HttpContext.Session.Set<List<Card>>($"{GAME_NAME}_DealerCards", DealerCards);
+            Winner = Gambling.EndState.Unset;
+            HttpContext.Session.Set<Gambling.EndState>($"{GAME_NAME}_Winner", Winner);
             BetAmount = 0;
+            HttpContext.Session.Set<float>($"{GAME_NAME}_BetAmount", BetAmount);
             BetAmountInput = 0;
 
             return RedirectToAction("Get");

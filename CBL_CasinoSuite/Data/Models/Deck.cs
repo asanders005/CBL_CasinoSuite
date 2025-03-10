@@ -31,7 +31,7 @@
         {
             if (playDeck.Count == 0) Shuffle();
             int index = random.Next(playDeck.Count);
-            Card card = new(playDeck[index]);
+            Card card = new(playDeck[index].Suit, playDeck[index].Number);
 
             playDeck.RemoveAt(index);
 

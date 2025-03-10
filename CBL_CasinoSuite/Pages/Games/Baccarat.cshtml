@@ -1,0 +1,61 @@
+﻿@page
+@model CBL_CasinoSuite.Pages.Games.BaccaratModel
+@{
+}
+
+@{
+    if (Model.BetAmount == 0)
+    {
+        <div class="text-center">
+            <h1 class="display-4">@ViewData["Title"]</h1>
+            <form method="post" asp-page-handler="Player">
+                <input asp-for="@Model.BetAmountInput" type="number" placeholder="0.00" class="textfield" />
+                <br />
+                <button type="submit" class="buttonfield">Bet On Player</button>
+            </form>
+            <form method="post" asp-page-handler="Bank">
+                <input asp-for="@Model.BetAmountInput" type="number" placeholder="0.00" class="textfield" />
+                <br />
+                <button type="submit" class="buttonfield">Bet On Bank</button>
+            </form>
+        </div>
+    }
+    else
+    {
+        <h1>bac rat: @Model.BetAmount</h1>
+
+        <h2>Player's cards:</h2>
+        foreach (Data.Models.Card card in Model.PlayerCards)
+        {
+            <p>@card.ToString()</p>
+        }
+
+        <h2>Bank's cards:</h2>
+        foreach (Data.Models.Card card in Model.BankCards)
+        {
+            <p>@card.ToString()</p>
+        }
+
+        if (Model.Winner == Data.Models.Gambling.EndState.Unset)
+        {
+            <form asp-page-handler="Hit" method="post">
+                <button>Hit</button>
+            </form>
+            <form asp-page-handler="Stand" method="post">
+                <button>Stand</button>
+            </form>
+        }
+        else
+        {
+            <form asp-page-handler="PlayAgain" method="post">
+                <button>Play Again</button>
+            </form>
+        }
+
+    }
+
+    <p>Player: @Model.CalculateHandTotal(Model.PlayerCards)</p>
+    <p>Dealer: @Model.CalculateHandTotal(Model.BankCards)</p>
+    <p>Winner: @Model.Winner.ToString()</p>
+}
+

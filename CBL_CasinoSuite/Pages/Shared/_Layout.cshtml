@@ -1,12 +1,14 @@
-﻿@using CBL_CasinoSuite.Data.Interfaces
-@using CBL_CasinoSuite.Data.Models
-@inject IUser UserService
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var username = HttpContextAccessor.HttpContext.Session.GetString("Username");
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>@ViewData["Title"] - CBL_CasinoSuite</title>
+	<title>@ViewData["Title"] - 99Prcent</title>
 	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/CBL_CasinoSuite.styles.css" asp-append-version="true" />
@@ -16,7 +18,7 @@
 		<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light mb-3 wood">
 			<div class="container distincttext">
 				<a class="navbar-brand" asp-area="" asp-page="/Index">
-					<img src="~/img/CasinoSuiteLogoMini.png" alt="Home" class="homelogo"/>
+					<img src="~/img/99PrcentLogo.png" alt="Home" class="homelogo"/>
 					</a>
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
 				aria-expanded="false" aria-label="Toggle navigation">
@@ -31,8 +33,7 @@
 							<a class="nav-link text-dark" asp-area="" asp-page="/Leaderboard">Leaderboard</a>
 						</li>
 						@{
-							User user = UserService.GetUser();
-							if (string.IsNullOrEmpty(user.Username))
+							if (string.IsNullOrEmpty(username))
 							{
 								<li class="nav-item">
 									<a class="nav-link text-dark" asp-area="" asp-page="/SignIn">Sign in</a>

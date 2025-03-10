@@ -7,13 +7,14 @@ namespace CBL_CasinoSuite.Pages;
 
 [BindProperties(SupportsGet = true)]
 public class SignIn : PageModel {
-    public string Username { get; set; }
-    public string Password { get; set; }
-    public string SignInWarning { get; set; }
+    public string Username { get; set; } = "";
+    public string Password { get; set; } = "";
+    public string SignInWarning { get; set; } = "";
 
-    public SignIn(IUser user, IDal dal)
+    public string PageRedirect { get; set; }
+
+    public SignIn(IDal dal)
     {
-        userSingleton = user;
         _dal = dal;
     }
 
@@ -26,13 +27,13 @@ public class SignIn : PageModel {
         User attemptedUser = _dal.GetUser(Username);
         if (!string.IsNullOrEmpty(attemptedUser.Username) && Password == attemptedUser.Password)
         {
-            userSingleton.SetUser(attemptedUser);
-            return RedirectToPage("/Account");
+            HttpContext.Session.SetString("Username", attemptedUser.Username);
+            if (string.IsNullOrEmpty(PageRedirect)) return RedirectToPage("/Account");
+            else return RedirectToPage(PageRedirect);
         }
 
-        return RedirectToAction("Get", new { Username = Username, SignInWarning = "The Username or Password is Incorrect" });
+        return RedirectToAction("Get", new { Username = Username, SignInWarning = "The Username or Password is Incorrect", PageRedirect = PageRedirect });
     }
 
-    private IUser userSingleton;
     private IDal _dal;
 }

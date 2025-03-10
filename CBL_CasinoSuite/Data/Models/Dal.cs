@@ -62,7 +62,7 @@ namespace CBL_CasinoSuite.Data.Models
             userSingleton.SetUser(userSingletonUpdate);
         }
 
-        public void UpdateUserBalance(string username, float balance)
+        public void UpdateUserBalance(string username, double balance)
         {
             // Update the database
 

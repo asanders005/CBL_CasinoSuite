@@ -7,6 +7,7 @@ ViewData["Title"] = "Sign up";
 <div class="text-center board wood-border distincttext">
     <h1 class="display-4">@ViewData["Title"]</h1>
     <form method="post" asp-page-handler="SignUp">
+		<input asp-for="PageRedirect" type="hidden" />
         <input asp-for="NewUsername" placeholder="Username" class="textfield"/>
 		    <br />
 		    <span asp-validation-for="NewUsername" class="dangerous"></span>

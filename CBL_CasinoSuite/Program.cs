@@ -6,8 +6,22 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.Cookie.Name = ".99Prcent.Session";
+    options.IdleTimeout = TimeSpan.FromMinutes(20);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 builder.Services.AddTransient<IDal, Dal>();
 builder.Services.AddSingleton<IUser, UserSingleton>();
+
+// Add IHttpContextAccessor service
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.Configure<RouteOptions>(options =>
 {
@@ -30,6 +44,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.UseSession();
 
 app.MapRazorPages();
 

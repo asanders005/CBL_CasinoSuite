@@ -35,7 +35,7 @@ namespace CBL_CasinoSuite.Data.Interfaces
         /// </summary>
         /// <param name="username">The username of the user to update</param>
         /// <param name="balance">The value that the user's current balance will be set to</param>
-        public void UpdateUserBalance(string username, float balance);
+        public void UpdateUserBalance(string username, double balance);
       
         /// <summary>
         /// Updates the statistics of a single game for the specified user in the database

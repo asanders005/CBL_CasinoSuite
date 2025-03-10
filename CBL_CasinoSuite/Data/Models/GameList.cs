@@ -7,6 +7,7 @@ namespace CBL_CasinoSuite.Data.Models
     {
         None = -1,
         Blackjack,
+        Baccarat,
         Poker
     }
 }

@@ -8,10 +8,11 @@ namespace CBL_CasinoSuite.Data.Models
         {
             Won,
             Lost,
-            Tied
+            Tied,
+            Unset
         }
 
-        public static string NegativeBalanceToString(float bal)
+        public static string NegativeBalanceToString(double bal)
         {
             if (bal < 0) return "-" + Math.Abs(bal).ToString("C2");
             else return bal.ToString("C2");
@@ -34,15 +35,17 @@ namespace CBL_CasinoSuite.Data.Models
         {
             User workingUser = dal.GetUser(username);
 
-            GameStats tempStats = workingUser.GameStatistics.First(g => g._GameName == gameName);
+            GameStats tempStats = workingUser.GameStatistics.FirstOrDefault(g => g._GameName == gameName);
             if (tempStats == null) tempStats = new GameStats(gameName);
 
             tempStats.TotalLosings -= betAmount;
             tempStats.TotalWinnings += (betAmount * winningsModifier);
             tempStats.TotalWins += 1;
 
-            dal.UpdateUserStatistics(workingUser.Username, tempStats);
-            dal.UpdateUserBalance(workingUser.Username, workingUser.CurrentBalance + betAmount + (betAmount * winningsModifier));
+            Console.WriteLine($"{username} won {betAmount} on {gameName} with modifier {winningsModifier}");
+
+            dal.UpdateUserStatistics(username, tempStats);
+            dal.UpdateUserBalance(username, workingUser.CurrentBalance + betAmount + (betAmount * winningsModifier));
         }
 
         public static void Lose(ref IDal dal, string username, string gameName)
@@ -61,7 +64,7 @@ namespace CBL_CasinoSuite.Data.Models
         {
             User workingUser = dal.GetUser(username);
 
-            GameStats tempStats = workingUser.GameStatistics.First(g => g._GameName == gameName);
+            GameStats tempStats = workingUser.GameStatistics.FirstOrDefault(g => g._GameName == gameName);
             if (tempStats == null) tempStats = new GameStats(gameName);
 
             tempStats.TotalLosings -= betAmount;

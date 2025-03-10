@@ -6,26 +6,24 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace CBL_CasinoSuite.Pages;
 
 public class Account : PageModel {
-    public readonly IUser userSingleton;
     public User user { get; private set; }
 
     [BindProperty]
     public float UpdateBalance { get; set; }
 
-    public Account(IUser user, IDal dal)
+    public Account(IDal dal)
     {
-        userSingleton = user;
         this.dal = dal;
     }
 
     public IActionResult OnGet()
     {
-        if (string.IsNullOrEmpty(userSingleton.GetUser().Username))
+        if (string.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
         {
             return RedirectToPage("/SignIn");
         }
 
-        user = userSingleton.GetUser();
+        user = dal.GetUser(HttpContext.Session.GetString("Username"));
 
         return null;
     }
@@ -34,8 +32,8 @@ public class Account : PageModel {
     { 
         if (UpdateBalance > 0)
         {
-            float newBalance = userSingleton.GetUser().CurrentBalance + UpdateBalance;
-            dal.UpdateUserBalance(userSingleton.GetUser().Username, newBalance);
+            double newBalance = user.CurrentBalance + UpdateBalance;
+            dal.UpdateUserBalance(user.Username, newBalance);
         }
 
         return RedirectToAction("Get");
@@ -43,7 +41,7 @@ public class Account : PageModel {
 
     public IActionResult OnPostSignOut()
     {
-        userSingleton.SetUser(new Data.Models.User());
+        HttpContext.Session.Clear();
 
         return RedirectToPage("/SignIn");
     }
