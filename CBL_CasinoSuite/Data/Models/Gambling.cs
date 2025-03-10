@@ -21,7 +21,7 @@ namespace CBL_CasinoSuite.Data.Models
         {
             User workingUser = dal.GetUser(username);
 
-            GameStats tempStats = workingUser.GameStatistics.First(g => g._GameName == gameName);
+            GameStats tempStats = workingUser.GameStatistics.FirstOrDefault(g => g._GameName == gameName);
             if (tempStats == null) tempStats = new GameStats(gameName);
 
             tempStats.TotalLosings += betAmount;
@@ -49,7 +49,7 @@ namespace CBL_CasinoSuite.Data.Models
         {
             User workingUser = dal.GetUser(username);
 
-            GameStats tempStats = workingUser.GameStatistics.First(g => g._GameName == gameName);
+            GameStats tempStats = workingUser.GameStatistics.FirstOrDefault(g => g._GameName == gameName);
             if (tempStats == null) tempStats = new GameStats(gameName);
 
             tempStats.TotalLosses += 1;
