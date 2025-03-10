@@ -32,7 +32,7 @@ public class Account : PageModel {
     { 
         if (UpdateBalance > 0)
         {
-            float newBalance = user.CurrentBalance + UpdateBalance;
+            double newBalance = user.CurrentBalance + UpdateBalance;
             dal.UpdateUserBalance(user.Username, newBalance);
         }
 

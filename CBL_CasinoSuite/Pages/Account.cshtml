@@ -16,7 +16,7 @@
 	</form>
 	<h2>User Statistics</h2>
 	@{
-		float totalGains = 0;
+		double totalGains = 0;
 		foreach (var stat in Model.user.GameStatistics)
 		{
 			totalGains += stat.TotalWinnings - stat.TotalLosings;
@@ -47,7 +47,7 @@
 						totalStats.TotalLosings += stat.TotalLosings;
 						<partial name="Partials/_PlayerStatPartial" model="stat" />
 					}
-					float tGains = totalStats.TotalWinnings - totalStats.TotalLosings;
+					double tGains = totalStats.TotalWinnings - totalStats.TotalLosings;
 					<tr>
 					<td>@totalStats._GameName</td>
 					<td>@Gambling.NegativeBalanceToString(tGains)</td>
