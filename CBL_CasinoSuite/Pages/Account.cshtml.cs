@@ -33,6 +33,7 @@ public class Account : PageModel {
         string username = HttpContext.Session.GetString("Username");
         if (UpdateBalance > 0 && !string.IsNullOrEmpty(username))
         {
+            user = dal.GetUser(username);
             double newBalance = user.CurrentBalance + UpdateBalance;
             dal.UpdateUserBalance(user.Username, newBalance);
         }
