@@ -1,0 +1,90 @@
+﻿@page
+@model CBL_CasinoSuite.Pages.Rules.PokerModel
+@{
+}
+
+<div class="wood-border board distincttext flex-container">
+<div class="justify-content-center">
+		<h1>Three Card Poker</h1>
+        <h2>Objective of the Game</h2>
+        <p>The goal of Three Card Poker is to have a higher-ranking three-card poker hand than the dealer’s hand.</p>
+
+        <h2>Game Setup and Bet Types</h2>
+        <h3>Betting Options</h3>
+        <ul>
+            <li><strong>Ante Bet:</strong> The main bet placed to play against the dealer.</li>
+            <li><strong>Pair Plus Bet:</strong> An optional bet that pays based on the player's hand strength.</li>
+            <li><strong>Play Bet:</strong> Placed after the player decides to continue playing.</li>
+        </ul>
+
+        <h2>Gameplay Steps</h2>
+        <ol>
+            <li>Players place their bets (Ante and optional Pair Plus).</li>
+            <li>Each player and the dealer receive three cards face down.</li>
+            <li>Players decide to play (placing a Play bet) or fold.</li>
+            <li>The dealer reveals their hand.</li>
+            <li>The dealer must have at least a Queen-high hand to qualify.</li>
+            <li>If the dealer qualifies, hands are compared to determine the winner.</li>
+        </ol>
+
+        <h2>Hand Rankings</h2>
+        <ol>
+            <li><strong>Straight Flush:</strong> Three consecutive cards of the same suit.</li>
+            <li><strong>Three of a Kind:</strong> Three cards of the same rank.</li>
+            <li><strong>Straight:</strong> Three consecutive cards of any suit.</li>
+            <li><strong>Flush:</strong> Three cards of the same suit, not in sequence.</li>
+            <li><strong>Pair:</strong> Two cards of the same rank.</li>
+            <li><strong>High Card:</strong> If none of the above hands are made.</li>
+        </ol>
+
+        <h2>Payouts</h2>
+        <h3>Ante and Play Bets</h3>
+        <p>Both are paid 1:1 if the player wins.</p>
+
+        <h3>Ante Bonus</h3>
+        <ul>
+            <li>Straight Flush → 5:1</li>
+            <li>Three of a Kind → 4:1</li>
+            <li>Straight → 1:1</li>
+        </ul>
+
+        <h3>Pair Plus Bet Payouts</h3>
+        <ul>
+            <li>Straight Flush → 40:1</li>
+            <li>Three of a Kind → 30:1</li>
+            <li>Straight → 6:1</li>
+            <li>Flush → 3:1</li>
+            <li>Pair → 1:1</li>
+        </ul>
+
+        <h2>Winning and Losing Scenarios</h2>
+        <table>
+            <tr>
+                <th>Player’s Hand</th>
+                <th>Dealer’s Hand</th>
+                <th>Result</th>
+            </tr>
+            <tr>
+                <td>Higher Hand</td>
+                <td>Lower Hand</td>
+                <td>Player wins ante and play bets (1:1)</td>
+            </tr>
+            <tr>
+                <td>Lower Hand</td>
+                <td>Higher Hand</td>
+                <td>Player loses ante and play bets</td>
+            </tr>
+            <tr>
+                <td>Same Hand</td>
+                <td>Same Hand</td>
+                <td>Push (bets returned)</td>
+            </tr>
+            <tr>
+                <td>Any</td>
+                <td>Dealer Doesn't Qualify</td>
+                <td>Player wins ante bet, play bet is pushed</td>
+            </tr>
+        </table>
+
+    </div>
+</div>

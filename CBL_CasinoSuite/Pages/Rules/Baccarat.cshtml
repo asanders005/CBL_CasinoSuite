@@ -1,0 +1,81 @@
+﻿@page
+@model CBL_CasinoSuite.Pages.Rules.BaccaratModel
+@{
+}
+
+<div class="wood-border board distincttext flex-container">
+    <div class="justify-content-center">
+        <h1>Baccarat</h1>
+        <h2>Objective of the Game</h2>
+        <p>The goal of Baccarat is to bet on the hand that will have a total closest to 9: the Player’s hand, the Banker’s hand, or a Tie.</p>
+
+        <h2>Card Values</h2>
+        <ul>
+            <li>Aces are worth 1 point.</li>
+            <li>2-9 are worth their face value.</li>
+            <li>10, Jack, Queen, and King are worth 0 points.</li>
+            <li>If the total exceeds 9, only the last digit is used (e.g., 15 becomes 5).</li>
+        </ul>
+
+        <h2>Gameplay</h2>
+        <ol>
+            <li>Players place their bets on Player, Banker, or Tie.</li>
+            <li>The dealer deals two cards to both the Player and Banker.</li>
+            <li>Hands are totaled, and depending on the value, a third card may be drawn.</li>
+            <li>The winning hand is the one closest to 9.</li>
+        </ol>
+
+        <h2>Third Card Rules</h2>
+        <p>In some cases, a third card is drawn based on the following rules:</p>
+        <h3>Player’s Hand</h3>
+        <ul>
+            <li>If the total is 0-5, the Player draws a third card.</li>
+            <li>If the total is 6 or 7, the Player stands.</li>
+            <li>If the total is 8 or 9, it is a natural win (no more cards drawn).</li>
+        </ul>
+
+        <h3>Banker’s Hand</h3>
+        <p>The Banker’s third card decision depends on the Player’s third card:</p>
+        <table>
+            <tr>
+                <th>Banker's Initial Total</th>
+                <th>Banker Draws if Player's Third Card is</th>
+            </tr>
+            <tr>
+                <td>0-2</td>
+                <td>Always draws</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Draws unless Player’s third card is an 8</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Draws if Player’s third card is 2-7</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Draws if Player’s third card is 4-7</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>Draws if Player’s third card is 6 or 7</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>Stands</td>
+            </tr>
+            <tr>
+                <td>8 or 9</td>
+                <td>Natural win (no more cards drawn)</td>
+            </tr>
+        </table>
+
+        <h2>Payouts</h2>
+        <ul>
+            <li><strong>Player Bet:</strong> 1:1 payout</li>
+            <li><strong>Banker Bet:</strong> 1:1 payout (with a 5% commission)</li>
+            <li><strong>Tie Bet:</strong> 8:1 payout</li>
+        </ul>
+    </div>
+</div>
