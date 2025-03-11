@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Net.Http;
+using static MongoDB.Driver.WriteConcern;
 
 namespace CBL_CasinoSuite.Pages.Games
 {
@@ -69,7 +70,7 @@ namespace CBL_CasinoSuite.Pages.Games
             return null;
         }
 
-        public IActionResult OnPostPlayer()
+        public IActionResult OnPostBet(string button)
         {
             user = _dal.GetUser(HttpContext.Session.GetString("Username"));
 
@@ -78,28 +79,10 @@ namespace CBL_CasinoSuite.Pages.Games
                 Gambling.Bet(BetAmountInput, ref _dal, user.Username, GAME_NAME);
                 BetAmount = BetAmountInput;
                 HttpContext.Session.Set<float>($"{GAME_NAME}_BetAmount", BetAmountInput);
-                BetOnBank = false;
-                HttpContext.Session.Set<bool>($"{GAME_NAME}_BetOnBank", false);
-                Deal();
-                HttpContext.Session.Set<List<Card>>($"{GAME_NAME}_BankCards", BankCards);
-                HttpContext.Session.Set<List<Card>>($"{GAME_NAME}_PlayerCards", PlayerCards);
-                return RedirectToAction("Get");
-            }
 
-            return null;
-        }
+                BetOnBank = (button == "Bank");
+                HttpContext.Session.Set<bool>($"{GAME_NAME}_BetOnBank", BetOnBank);
 
-        public IActionResult OnPostBank()
-        {
-            user = _dal.GetUser(HttpContext.Session.GetString("Username"));
-
-            if (BetAmountInput > 0)
-            {
-                Gambling.Bet(BetAmountInput, ref _dal, user.Username, GAME_NAME);
-                BetAmount = BetAmountInput;
-                HttpContext.Session.Set<float>($"{GAME_NAME}_BetAmount", BetAmount);
-                BetOnBank = true;
-                HttpContext.Session.Set<bool>($"{GAME_NAME}_BetOnBank", true);
                 Deal();
                 HttpContext.Session.Set<List<Card>>($"{GAME_NAME}_BankCards", BankCards);
                 HttpContext.Session.Set<List<Card>>($"{GAME_NAME}_PlayerCards", PlayerCards);

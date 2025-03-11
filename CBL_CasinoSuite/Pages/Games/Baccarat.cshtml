@@ -1,61 +1,49 @@
 ﻿@page
 @model CBL_CasinoSuite.Pages.Games.BaccaratModel
 @{
+    ViewData["Title"] = "Baccarat";
 }
 
 @{
     if (Model.BetAmount == 0)
     {
-        <div class="text-center">
+        <div class="text-center board wood-border distincttext">
             <h1 class="display-4">@ViewData["Title"]</h1>
-            <form method="post" asp-page-handler="Player">
+            <form method="post" asp-page-handler="Bet">
                 <input asp-for="@Model.BetAmountInput" type="number" placeholder="0.00" class="textfield" />
                 <br />
-                <button type="submit" class="buttonfield">Bet On Player</button>
-            </form>
-            <form method="post" asp-page-handler="Bank">
-                <input asp-for="@Model.BetAmountInput" type="number" placeholder="0.00" class="textfield" />
-                <br />
-                <button type="submit" class="buttonfield">Bet On Bank</button>
+                <button type="submit" class="wood buttonfield" value="Player" name="button">Bet Player</button>
+                <button type="submit" class="wood buttonfield" value="Bank" name="button">Bet Bank</button>
             </form>
         </div>
     }
     else
     {
-        <h1>bac rat: @Model.BetAmount</h1>
+        <div class="text-center board wood-border distincttext">
+            <h1>Baccarat - Bet: @Model.BetAmount</h1>
 
-        <h2>Player's cards:</h2>
-        foreach (Data.Models.Card card in Model.PlayerCards)
-        {
-            <p>@card.ToString()</p>
-        }
+            <h2>Player:</h2>
+            <h5>Total: @Model.CalculateHandTotal(Model.PlayerCards)</h5>
+            <div class="cardcont">
+                @foreach (Data.Models.Card card in Model.PlayerCards)
+                {
+                    <partial name="Partials/_CardPartial" model=card />
+                }
+            </div>
 
-        <h2>Bank's cards:</h2>
-        foreach (Data.Models.Card card in Model.BankCards)
-        {
-            <p>@card.ToString()</p>
-        }
-
-        if (Model.Winner == Data.Models.Gambling.EndState.Unset)
-        {
-            <form asp-page-handler="Hit" method="post">
-                <button>Hit</button>
-            </form>
-            <form asp-page-handler="Stand" method="post">
-                <button>Stand</button>
-            </form>
-        }
-        else
-        {
+            <h2>Bank:</h2>
+            <h5>Total: @Model.CalculateHandTotal(Model.BankCards)</h5>
+            <div class="cardcont">
+                @foreach (Data.Models.Card card in Model.BankCards)
+                {
+                    <partial name="Partials/_CardPartial" model=card />
+                }
+            </div>
+            <h1>Outcome: @Model.Winner</h1>
             <form asp-page-handler="PlayAgain" method="post">
-                <button>Play Again</button>
+                <button class="wood buttonfield">Play Again</button>
             </form>
-        }
-
+        </div>
     }
-
-    <p>Player: @Model.CalculateHandTotal(Model.PlayerCards)</p>
-    <p>Dealer: @Model.CalculateHandTotal(Model.BankCards)</p>
-    <p>Winner: @Model.Winner.ToString()</p>
 }
 
