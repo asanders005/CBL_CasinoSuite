@@ -1,6 +1,7 @@
 ﻿@page
 @model CBL_CasinoSuite.Pages.Games.PokerModel
 @{
+    ViewData["Title"] = "Poker";
 }
 
 @{
@@ -10,9 +11,9 @@
             <h1 class="display-4">@ViewData["Title"]</h1>
             <form method="post" asp-page-handler="BetMoney">
                 <h4>Ante</h4>
-                <input asp-for="@Model.AnteInput" type="number" placeholder="0.00" class="textfield" />
+                <input asp-for="@Model.AnteInput" type="decimal" placeholder="0.00" class="textfield" />
                 <h4>Pair Plus</h4>
-                <input asp-for="@Model.PairPlusInput" type="number" placeholder="0.00" class="textfield" />
+                <input asp-for="@Model.PairPlusInput" type="decimal" placeholder="0.00" class="textfield" />
                 <br />
                 <button type="submit" class="wood buttonfield">Bet Money</button>
             </form>

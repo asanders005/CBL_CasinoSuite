@@ -10,7 +10,7 @@
         <div class="text-center board wood-border distincttext">
             <h1 class="display-4">@ViewData["Title"]</h1>
             <form method="post" asp-page-handler="BetMoney">
-                <input asp-for="@Model.BetAmountInput" type="number" placeholder="0.00" class="textfield" />
+                <input asp-for="@Model.BetAmountInput" type="decimal" placeholder="0.00" class="textfield" />
                 <br />
                 <button type="submit" class="wood buttonfield">Bet Money</button>
             </form>

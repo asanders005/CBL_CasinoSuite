@@ -109,14 +109,14 @@ div.card {
     animation: flipcard 0.5s 1 linear;
   }
   &.flipped {
-    background-image: url(../img/diamond.svg);
-    background-size: 0.5em;
+    background-image: url(../img/card_back_blue.png);
     background-position: center;
     img {
       position: relative;
       margin: auto;
-      width: 70%;
-      height: 35%;
+      width: 100%;
+      height: 50%;
+      filter: drop-shadow(2px 2px 1px #000) drop-shadow(-2px -2px 1px #000) drop-shadow(-2px 2px 1px #000) drop-shadow(2px -2px 1px #000);
     }
   }
   h1 {
