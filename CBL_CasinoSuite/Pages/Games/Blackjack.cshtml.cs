@@ -81,6 +81,10 @@ namespace CBL_CasinoSuite.Pages.Games
 
         private void EndGame(Gambling.EndState endState, float winningsModifier = 1.0f)
         {
+            foreach (Card card in DealerCards)
+            {
+                card.FaceUp = true;
+            }
             Winner = endState;
             HttpContext.Session.Set<Gambling.EndState>($"{GAME_NAME}_Winner", Winner);
             user = _dal.GetUser(HttpContext.Session.GetString("Username"));
@@ -149,11 +153,12 @@ namespace CBL_CasinoSuite.Pages.Games
         }
 
         private void Stand()
-        {
+        {                
             while (CalculateHandTotal(DealerCards) < 17)
             {
                 DealerCards.Add(deck.Draw());
             }
+
 
             Update();
         }
