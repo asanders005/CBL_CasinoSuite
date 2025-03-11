@@ -167,6 +167,8 @@ namespace CBL_CasinoSuite.Pages.Games
 
         public IActionResult OnPostFold()
         {
+            user = _dal.GetUser(HttpContext.Session.GetString("Username"));
+
             LoseGame();
             HasWinner = true;
             HttpContext.Session.Set<bool>($"{GAME_NAME}_HasWinner", HasWinner);
