@@ -121,6 +121,7 @@ namespace CBL_CasinoSuite.Pages.Games
             dealerCards = HttpContext.Session.Get<List<Card>>($"{GAME_NAME}_dealerCards");
             playerCards = HttpContext.Session.Get<List<Card>>($"{GAME_NAME}_playerCards");
 
+            AnteBet = HttpContext.Session.Get<float>($"{GAME_NAME}_AnteBet");
             PlayBet = AnteBet;
             HttpContext.Session.Set<float>($"{GAME_NAME}_PlayBet", PlayBet);
             Gambling.Bet(PlayBet, ref _dal, user.Username, GAME_NAME);
@@ -258,7 +259,14 @@ namespace CBL_CasinoSuite.Pages.Games
                 _ => 0
             };
 
-            int highCardValue = hand.OrderByDescending(c => c.Number).First().Number == 1 ? 14 : hand.OrderByDescending(c => c.Number).First().Number;
+            int highCardValue = hand.OrderByDescending(c => c.Number).First().Number;
+            foreach (Card card in hand)
+            {
+                if (card.Number == 1)
+                {
+                    highCardValue = 14;
+                }
+            }
 
             return baseValue + highCardValue;
         }

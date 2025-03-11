@@ -6,56 +6,62 @@
 @{
     if (Model.AnteBet == 0 && Model.PairPlusBet == 0)
     {
-        <div class="text-center">
+        <div class="text-center board wood-border distincttext">
             <h1 class="display-4">@ViewData["Title"]</h1>
             <form method="post" asp-page-handler="BetMoney">
-                <p>Ante</p>
+                <h4>Ante</h4>
                 <input asp-for="@Model.AnteInput" type="number" placeholder="0.00" class="textfield" />
-                <p>Pair Plus</p>
+                <h4>Pair Plus</h4>
                 <input asp-for="@Model.PairPlusInput" type="number" placeholder="0.00" class="textfield" />
                 <br />
-                <button type="submit" class="buttonfield">Bet Money</button>
+                <button type="submit" class="wood buttonfield">Bet Money</button>
             </form>
         </div>
     }
     else
     {
-        <h2>Your Ante Bet: @Model.AnteBet</h2>
-        <h2>Your PP Bet: @Model.PairPlusBet</h2>
+        <div class="text-center board wood-border distincttext">
+            <h2>Your Ante Bet: @Model.AnteBet</h2>
+            <h2>Your PP Bet: @Model.PairPlusBet</h2>
 
-        <h2>Dealer's Cards</h2>
-        foreach (Data.Models.Card card in Model.dealerCards)
-        {
-            <p>@card.ToString()</p>
-        }
+            <h2>Dealer's Cards</h2>
+            <div class="cardcont">
+                @foreach (Data.Models.Card card in Model.dealerCards)
+                {
+                    <partial name="Partials/_CardPartial" model=card />
+                }
+            </div>
 
-        <h2>Your Cards</h2>
-        foreach (Data.Models.Card card in Model.playerCards)
-        {
-            <p>@card.ToString()</p>
-        }
+            <h2>Your Cards</h2>
+            <div class="cardcont">
+                @foreach (Data.Models.Card card in Model.playerCards)
+                {
+                    <partial name="Partials/_CardPartial" model=card />
+                }
+            </div>
 
-        if (Model.HasWinner == false)
-        {
+            @if (Model.HasWinner == false)
+            {
             
-            <h2>Will you play or fold?</h2>
-            <form asp-page-handler="Play" method="post">
-                <button>Play</button>
-            </form>
-            <form asp-page-handler="Fold" method="post">
-                <button>Fold</button>
-            </form>
-        }
-        else
-        {
-            <h2>Winner: @Model.winner</h2>
-            <form asp-page-handler="PlayAgain" method="post">
-                <button>Play Again</button>
-            </form>
-        }
+                <h2>Will you play or fold?</h2>
+                <form asp-page-handler="Play" method="post">
+                    <button class="wood buttonfield">Play</button>
+                </form>
+                <form asp-page-handler="Fold" method="post">
+                    <button class="wood buttonfield">Fold</button>
+                </form>
+            }
+            else
+            {
+                <h2>Winner: @Model.winner</h2>
+                <form asp-page-handler="PlayAgain" method="post">
+                    <button class="wood buttonfield">Play Again</button>
+                </form>
+            }
 
-        <h2><u>Pair Plus Results:</u></h2>
-        <h3>Ranking: @PokerModel.EvaluateHand(Model.playerCards)</h3>
-        <h3>Winnings: @Model.PairPlusWinnings</h3>
+            <h2><u>Pair Plus Results:</u></h2>
+            <h3>Ranking: @PokerModel.EvaluateHand(Model.playerCards)</h3>
+            <h3>Winnings: @Model.PairPlusWinnings</h3>
+        </div>
     }
 }
