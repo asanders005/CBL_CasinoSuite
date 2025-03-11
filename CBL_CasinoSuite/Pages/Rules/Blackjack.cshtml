@@ -1,0 +1,70 @@
+﻿@page
+@model CBL_CasinoSuite.Pages.Rules.BlackjackModel
+@{
+}
+
+<div class="wood-border board distincttext flex-container">
+    <div class="justify-content-center">
+        <h1>Blackjack</h1>
+        <h2>Objective of the Game</h2>
+        <p>The goal of Blackjack is to have a hand value closer to 21 than the dealer’s hand without exceeding 21.</p>
+
+        <h2>Card Values</h2>
+        <ul>
+            <li>Numbered cards (2-10) are worth their face value.</li>
+            <li>Face cards (King, Queen, Jack) are worth 10 points.</li>
+            <li>Ace can be worth 1 or 11, depending on which benefits the hand.</li>
+        </ul>
+
+        <h2>Gameplay</h2>
+        <ol>
+            <li>Players place their bets.</li>
+            <li>Each player and the dealer receive two cards. The dealer has one card face up and one face down.</li>
+            <li>Players decide to hit (take another card) or stand (keep their current hand).</li>
+            <li>Players can also choose to double down, split pairs, or surrender depending on the rules.</li>
+            <li>Once all players have finished, the dealer reveals their hidden card and plays according to set rules.</li>
+            <li>The winner is determined based on who has the highest hand without exceeding 21.</li>
+        </ol>
+
+        <h2>Player Options</h2>
+        <ul>
+            <li><strong>Hit:</strong> Take another card.</li>
+            <li><strong>Stand:</strong> Keep the current hand.</li>
+            <li><strong>Double Down:</strong> Double the initial bet and receive only one more card.</li>
+            <li><strong>Split:</strong> If dealt two of the same card, split them into two separate hands.</li>
+            <li><strong>Surrender:</strong> Forfeit the hand and receive half of the original bet back (if allowed).</li>
+        </ul>
+
+        <h2>Dealer Rules</h2>
+        <p>The dealer must hit if their hand is 16 or lower and stand on 17 or higher.</p>
+
+        <h2>Winning Scenarios</h2>
+        <table>
+            <tr>
+                <th>Player's Hand</th>
+                <th>Dealer's Hand</th>
+                <th>Outcome</th>
+            </tr>
+            <tr>
+                <td>21 (Blackjack)</td>
+                <td>Any other value</td>
+                <td>Player wins 3:2 payout</td>
+            </tr>
+            <tr>
+                <td>Closer to 21</td>
+                <td>Lower value</td>
+                <td>Player wins 1:1 payout</td>
+            </tr>
+            <tr>
+                <td>Bust (Over 21)</td>
+                <td>Any value</td>
+                <td>Player loses</td>
+            </tr>
+            <tr>
+                <td>Same value</td>
+                <td>Same value</td>
+                <td>Push (bet returned)</td>
+            </tr>
+        </table>
+    </div>
+</div>

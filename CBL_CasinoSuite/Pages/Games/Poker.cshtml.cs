@@ -171,6 +171,8 @@ namespace CBL_CasinoSuite.Pages.Games
             user = _dal.GetUser(HttpContext.Session.GetString("Username"));
 
             LoseGame();
+            RevealDealerCards();
+            HttpContext.Session.Set<List<Card>>($"{GAME_NAME}_dealerCards", dealerCards);
             HasWinner = true;
             HttpContext.Session.Set<bool>($"{GAME_NAME}_HasWinner", HasWinner);
             winner = "Dealer";
