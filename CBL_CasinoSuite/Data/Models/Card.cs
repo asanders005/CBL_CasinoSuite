@@ -11,7 +11,7 @@ public class Card {
         Number = number;
     }
 
-    public bool FaceUp { get; set; } = false;
+    public bool FaceUp { get; set; } = true;
     
     public enum CardSuit {
         Clubs,

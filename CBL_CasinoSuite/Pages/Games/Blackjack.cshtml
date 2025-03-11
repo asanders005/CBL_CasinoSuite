@@ -31,7 +31,10 @@
             </div>
 
             <h2>Dealer:</h2>
+            @if (Model.Winner != Data.Models.Gambling.EndState.Unset)
+            {
             <h5>Total: @Model.CalculateHandTotal(Model.DealerCards)</h5>
+            }
             <div class="cardcont">
                 @foreach (Data.Models.Card card in Model.DealerCards)
                 {
@@ -50,7 +53,7 @@
             }
             else
             {
-                <h1>Winner: @Model.Winner</h1>
+                <h1>Outcome: @Model.Winner</h1>
                 <form asp-page-handler="PlayAgain" method="post">
                     <button class="wood buttonfield">Play Again</button>
                 </form>
