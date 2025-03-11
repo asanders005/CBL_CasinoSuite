@@ -12,7 +12,7 @@ namespace CBL_CasinoSuite.Data.Models
             Unset
         }
 
-        public static string NegativeBalanceToString(float bal)
+        public static string NegativeBalanceToString(double bal)
         {
             if (bal < 0) return "-" + Math.Abs(bal).ToString("C2");
             else return bal.ToString("C2");
@@ -42,8 +42,10 @@ namespace CBL_CasinoSuite.Data.Models
             tempStats.TotalWinnings += (betAmount * winningsModifier);
             tempStats.TotalWins += 1;
 
-            dal.UpdateUserStatistics(workingUser.Username, tempStats);
-            dal.UpdateUserBalance(workingUser.Username, workingUser.CurrentBalance + betAmount + (betAmount * winningsModifier));
+            Console.WriteLine($"{username} won {betAmount} on {gameName} with modifier {winningsModifier}");
+
+            dal.UpdateUserStatistics(username, tempStats);
+            dal.UpdateUserBalance(username, workingUser.CurrentBalance + betAmount + (betAmount * winningsModifier));
         }
 
         public static void Lose(ref IDal dal, string username, string gameName)

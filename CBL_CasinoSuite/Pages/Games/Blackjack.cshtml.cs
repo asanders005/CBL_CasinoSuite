@@ -83,12 +83,17 @@ namespace CBL_CasinoSuite.Pages.Games
         {
             Winner = endState;
             HttpContext.Session.Set<Gambling.EndState>($"{GAME_NAME}_Winner", Winner);
+            user = _dal.GetUser(HttpContext.Session.GetString("Username"));
+            BetAmount = HttpContext.Session.Get<float>($"{GAME_NAME}_BetAmount");
+            
             switch (endState)
             {
                 case Gambling.EndState.Won:
+                    Console.WriteLine($"Won {GAME_NAME}! username: {user.Username}, bet: {BetAmount}");
                     Gambling.Win(BetAmount, ref _dal, user.Username, GAME_NAME, winningsModifier);
                     break;
                 case Gambling.EndState.Lost:
+                    Console.WriteLine($"Lost {GAME_NAME}! username: {user.Username}, bet: {BetAmount}");
                     Gambling.Lose(ref _dal, user.Username, GAME_NAME);
                     break;
                 case Gambling.EndState.Tied:

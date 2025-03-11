@@ -1,0 +1,61 @@
+﻿@page
+@model CBL_CasinoSuite.Pages.Games.PokerModel
+@{
+}
+
+@{
+    if (PokerModel.AnteBet == 0 && PokerModel.PairPlusBet == 0)
+    {
+        <div class="text-center">
+            <h1 class="display-4">@ViewData["Title"]</h1>
+            <form method="post" asp-page-handler="BetMoney">
+                <p>Ante</p>
+                <input asp-for="@Model.AnteInput" type="number" placeholder="0.00" class="textfield" />
+                <p>Pair Plus</p>
+                <input asp-for="@Model.PairPlusInput" type="number" placeholder="0.00" class="textfield" />
+                <br />
+                <button type="submit" class="buttonfield">Bet Money</button>
+            </form>
+        </div>
+    }
+    else
+    {
+        <h2>Your Ante Bet: @PokerModel.AnteBet</h2>
+        <h2>Your PP Bet: @PokerModel.PairPlusBet</h2>
+
+        <h2>Dealer's Cards</h2>
+        foreach (Data.Models.Card card in PokerModel.dealerCards)
+        {
+            <p>@card.ToString()</p>
+        }
+
+        <h2>Your Cards</h2>
+        foreach (Data.Models.Card card in PokerModel.playerCards)
+        {
+            <p>@card.ToString()</p>
+        }
+
+        if (PokerModel.HasWinner == false)
+        {
+            
+            <h2>Will you play or fold?</h2>
+            <form asp-page-handler="Play" method="post">
+                <button>Play</button>
+            </form>
+            <form asp-page-handler="Fold" method="post">
+                <button>Fold</button>
+            </form>
+        }
+        else
+        {
+            <h2>Winner: @PokerModel.winner</h2>
+            <form asp-page-handler="PlayAgain" method="post">
+                <button>Play Again</button>
+            </form>
+        }
+
+        <h2><u>Pair Plus Results:</u></h2>
+        <h3>Ranking: @PokerModel.EvaluateHand(PokerModel.playerCards)</h3>
+        <h3>Winnings: @PokerModel.PairPlusWinnings</h3>
+    }
+}
