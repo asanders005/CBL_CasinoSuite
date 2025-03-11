@@ -4,7 +4,7 @@
 }
 
 @{
-    if (PokerModel.AnteBet == 0 && PokerModel.PairPlusBet == 0)
+    if (Model.AnteBet == 0 && Model.PairPlusBet == 0)
     {
         <div class="text-center">
             <h1 class="display-4">@ViewData["Title"]</h1>
@@ -20,22 +20,22 @@
     }
     else
     {
-        <h2>Your Ante Bet: @PokerModel.AnteBet</h2>
-        <h2>Your PP Bet: @PokerModel.PairPlusBet</h2>
+        <h2>Your Ante Bet: @Model.AnteBet</h2>
+        <h2>Your PP Bet: @Model.PairPlusBet</h2>
 
         <h2>Dealer's Cards</h2>
-        foreach (Data.Models.Card card in PokerModel.dealerCards)
+        foreach (Data.Models.Card card in Model.dealerCards)
         {
             <p>@card.ToString()</p>
         }
 
         <h2>Your Cards</h2>
-        foreach (Data.Models.Card card in PokerModel.playerCards)
+        foreach (Data.Models.Card card in Model.playerCards)
         {
             <p>@card.ToString()</p>
         }
 
-        if (PokerModel.HasWinner == false)
+        if (Model.HasWinner == false)
         {
             
             <h2>Will you play or fold?</h2>
@@ -48,14 +48,14 @@
         }
         else
         {
-            <h2>Winner: @PokerModel.winner</h2>
+            <h2>Winner: @Model.winner</h2>
             <form asp-page-handler="PlayAgain" method="post">
                 <button>Play Again</button>
             </form>
         }
 
         <h2><u>Pair Plus Results:</u></h2>
-        <h3>Ranking: @PokerModel.EvaluateHand(PokerModel.playerCards)</h3>
-        <h3>Winnings: @PokerModel.PairPlusWinnings</h3>
+        <h3>Ranking: @PokerModel.EvaluateHand(Model.playerCards)</h3>
+        <h3>Winnings: @Model.PairPlusWinnings</h3>
     }
 }

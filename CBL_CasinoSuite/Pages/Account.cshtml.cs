@@ -29,8 +29,9 @@ public class Account : PageModel {
     }
 
     public IActionResult OnPostUpdateBalance()
-    { 
-        if (UpdateBalance > 0)
+    {
+        string username = HttpContext.Session.GetString("Username");
+        if (UpdateBalance > 0 && !string.IsNullOrEmpty(username))
         {
             double newBalance = user.CurrentBalance + UpdateBalance;
             dal.UpdateUserBalance(user.Username, newBalance);
