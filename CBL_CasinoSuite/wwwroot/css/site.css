@@ -18,15 +18,16 @@ html {
 }
 
 .board {
-  background-image: url("../img/felt.jpg");
-  background-repeat: repeat;
-  background-size: 20%;
-  background-position: center;
-  background-color: #33bb66;
+    color: white;
+    background-image: url("../img/felt.jpg");
+    background-repeat: repeat;
+    background-size: 20%;
+    background-position: center;
+    background-color: #33bb66;
 }
 
 .distincttext {
-  color: black;
+  color: white;
   text-shadow: 0 0 5px rgba(0, 0, 0, .5);
   &.distincttext:visited, .distincttext:link, .distincttext:active {
     color: #AAAAFF;
@@ -212,11 +213,12 @@ div.card {
 }
 
 .textfield {
-  padding: 2px;
-  margin: 10px;
-  width: clamp(200px,15%,300px);
-  border-radius: 50px;
-  font-size: 1em;
+    color: black;
+    padding: 2px;
+    margin: 10px;
+    width: clamp(200px,15%,300px);
+    border-radius: 50px;
+    font-size: 1em;
 }
 
 .buttonfield {
@@ -252,4 +254,9 @@ div.card {
 .flex-container {
     display: flex;
     justify-content: space-between;
+}
+
+.woodtext {
+    color:black;
+    font-weight: bold;
 }
