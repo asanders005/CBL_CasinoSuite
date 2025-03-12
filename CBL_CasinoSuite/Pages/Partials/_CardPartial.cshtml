@@ -23,9 +23,12 @@ else {
                 ViewBag.suitimg = "../img/heart.svg";
                 break;
         }
-        @if (Model.Number > 10) {
+        @if (Model.Number > 10 || Model.Number == 1) {
             <img alt="@ViewBag.suitimg.ToString()" src="@ViewBag.suitimg" class="c1n1"/>
             switch (Model.Number) {
+                case 1:
+                    <h1>A</h1>
+                    break;
                 case 11:
                     <h1>J</h1>
                     break;
