@@ -1,7 +1,10 @@
-﻿@using Microsoft.AspNetCore.Http
+﻿@using CBL_CasinoSuite.Data.Models
+@using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
+@inject CBL_CasinoSuite.Data.Interfaces.IDal dal
 @{
-    var username = HttpContextAccessor.HttpContext.Session.GetString("Username");
+	var username = HttpContextAccessor.HttpContext.Session.GetString("Username");
+	var user = dal.GetUser(username);
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -32,6 +35,8 @@
 						<li class="nav-item">
 							<a class="nav-link text-dark" asp-area="" asp-page="/Leaderboard">Leaderboard</a>
 						</li>
+                    </ul>
+					<ul class="navbar-nav">
 						@{
 							if (string.IsNullOrEmpty(username))
 							{
@@ -41,12 +46,15 @@
 							}
 							else
 							{
+								<li class ="nav-item">
+									<a class="nav-link text-dark">@Gambling.NegativeBalanceToString(user.CurrentBalance)</a>
+								</li>
 								<li class="nav-item">
-									<a class="nav-link text-dark" asp-area="" asp-page="/Account">Account</a>
+									<a class="nav-link text-dark" asp-area="" asp-page="/Account">@username</a>
 								</li>
 							}
 						}
-                    </ul>
+					</ul>
                 </div>
             </div>
         </nav>
