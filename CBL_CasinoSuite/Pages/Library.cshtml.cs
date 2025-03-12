@@ -8,13 +8,13 @@ public class Library : PageModel {
     {
         new LibraryGameModel(
             EGameList.Blackjack.ToString(),
-            "Want to test your luck and strategy? The goal is simple: beat the dealer by getting a hand value as close to 21 as possible—without going over!" +
-            " With exciting decisions to make at every turn, it's a thrilling game of skill and chance. Ready to try your hand?", 
+            "Compete against the House to get as close to 21 as possible without going over!" +
+            " This is the most fun and addictive game we offer! Trust us that the best strategy is to bet high and hit only on 17+", 
             "/img/CasinoSuiteLogo.png"),
         new LibraryGameModel(
             EGameList.Baccarat.ToString(),
-            "Curious about the elegance of Baccarat? The goal is straightforward: bet on the hand that will get closest to 9—whether it's the player's, the dealer's, or a tie! " +
-            "With easy-to-understand rules and thrilling moments, it’s the perfect game for both beginners and pros. Ready to dive in?", 
+            "The dealer draws two hands: Player and Banker. All you have to do is bet on the one you think will get closer to 9!" +
+            " This is the easiest game we offer, so it's a great pick for baby's first gamble! Introduce your children young to get them hooked!", 
             "/img/CasinoSuiteLogo.png"),
         new LibraryGameModel(
             EGameList.Poker.ToString(),
